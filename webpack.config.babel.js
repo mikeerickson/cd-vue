@@ -3,18 +3,20 @@
 import path   from 'path';
 import core   from 'cd-core';
 import config from './config';
+import merge  from 'webpack-merge';
 
 import WebpackShellPlugin    from '@slightlytyler/webpack-shell-plugin';
 import WatchIgnorePlugin     from 'watch-ignore-webpack-plugin';
 import WebpackNotifierPlugin from 'webpack-notifier';
+import BrowserSyncPlugin     from 'browser-sync-webpack-plugin';
 
 const isProd  = (process.env.ENV === 'production') || (process.env.NODE_ENV === 'production');
 const isDev   = !isProd;
 
-const webpackConfig = {
+let webpackConfig = {
 	entry: config.scripts.entry,  // use config
 	output: {
-		path: path.join(config.scripts.public,'js'),
+		path: path.join(__dirname, 'public', 'js'),
 		filename: 'bundle.js'
 	},
 	module: {
@@ -50,13 +52,21 @@ const webpackConfig = {
 			icon:    core.getPassIcon(),
 			sound:   true,
 			message: `${config.scripts.public}/bundle.js Created Successfully`
-		})
+		}),
+		new BrowserSyncPlugin({
+			host: 'localhost',
+			port: 9000,
+			server: {
+				baseDir: ['public']
+			},
+			files: ['./public/**/*.*']
+		}),
  	],
-  resolve: {
-	  alias: {
-	    'vue$': 'vue/dist/vue.common.js'
-    }
-  }
+	resolve: {
+		alias: {
+		'vue$': 'vue/dist/vue.common.js'
+		}
+	}
 }
 
 if (isDev) {

@@ -2733,16 +2733,77 @@ module.exports = function(module) {
 
 
 var msg = __webpack_require__(7);
+var pkgInfo = __webpack_require__(33);
+// application wide sass (each component may have their own sass as well)
+// import '!style-loader!css-loader!sass-loader!../sass/app.scss';
 
 new Vue({
 	el: '#v-app',
-	data: {},
+	data: {
+		appName: pkgInfo.appName,
+		appVersion: pkgInfo.version
+	},
 	methods: {},
 	computed: {},
 	mounted: function mounted() {
-		msg.success('Vue Ready!');
+		msg.success(' === ' + this.appName + ' Vue Ready === ');
 	}
 });
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports) {
+
+module.exports = {
+	"name": "cd-vue-starter",
+	"appName": "CodeDungeon VueJS Starter",
+	"version": "0.0.1",
+	"description": "CodeDungeon VueJS Starter",
+	"main": "index.js",
+	"scripts": {
+		"build": "webpack --hide-modules --config ./webpack.config.babel.js",
+		"build:dev": "npm run build -- -w",
+		"build:sass": "./node_modules/.bin/node-sass ./src/sass/app.scss > ./public/css/app.css",
+		"build:styles": "npm run build:sas",
+		"lint": "eslint \"./src/**/*.js\"",
+		"test": "ava"
+	},
+	"keywords": [],
+	"author": "Mike Erickson <codedungeon@gmail.com> (https://github.com/mikeerickson)",
+	"license": "MIT",
+	"dependencies": {
+		"vue": "2.1.10"
+	},
+	"devDependencies": {
+		"@slightlytyler/webpack-shell-plugin": "0.4.5",
+		"ava": "0.18.2",
+		"babel-core": "6.23.1",
+		"babel-eslint": "7.1.1",
+		"babel-loader": "6.3.2",
+		"babel-preset-es2015": "6.22.0",
+		"babel-register": "6.23.0",
+		"bootstrap-sass": "3.3.7",
+		"browser-sync": "2.18.8",
+		"browser-sync-webpack-plugin": "1.1.4",
+		"cd-core": "0.0.11",
+		"cd-messenger": "2.7.16",
+		"chalk": "1.1.3",
+		"css-loader": "0.26.1",
+		"eslint": "3.15.0",
+		"eslint-loader": "1.6.1",
+		"file-loader": "0.10.0",
+		"node-sass": "4.5.0",
+		"sass-loader": "6.0.1",
+		"style-loader": "0.13.1",
+		"vue-loader": "11.0.0",
+		"vue-style-loader": "2.0.0",
+		"watch-ignore-webpack-plugin": "1.0.0",
+		"webpack": "2.2.1",
+		"webpack-dev-server": "2.3.0",
+		"webpack-merge": "2.6.1",
+		"webpack-notifier": "1.5.0"
+	}
+};
 
 /***/ })
 /******/ ]);
