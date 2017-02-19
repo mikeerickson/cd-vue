@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "@slightlytyler/webpack-shell-plugin": "0.4.5",
+    "ava": "0.18.2",
     "babel-core": "6.23.1",
     "babel-eslint": "7.1.1",
     "babel-loader": "6.3.2",
