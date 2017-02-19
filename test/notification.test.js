@@ -34,4 +34,4 @@ test('it computes the notification', t => {
     }}).$mount();
 
     t.is(vm.notification, 'FOOBAR');
-})
+});

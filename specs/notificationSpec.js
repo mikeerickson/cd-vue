@@ -1,6 +1,7 @@
-import {assert}     from 'chai';
-import {boot}       from './VueBootstrap';
-import Notification from '../src/js/Notification2';
+import {beforeEach, describe, it} from 'mocha';
+import {assert}                   from 'chai';
+import {boot}                     from './VueBootstrap';
+import Notification               from '../src/js/Notification2';
 
 let sut;
 

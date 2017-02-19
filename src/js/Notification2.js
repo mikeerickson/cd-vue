@@ -5,17 +5,17 @@ export default {
             <button ref="button" v-on:click="counter+=1">Add 1</button>
         </div>`,
 
-    props: [ 'message' ],
+    props: ['message'],
 
     data() {
         return {
             counter: 0
-        }
-    },
+        };
+},
 
-    computed: {
-        notification() {
-            return this.message.toUpperCase();
-        }
-    }
+computed: {
+  notification() {
+    return this.message.toUpperCase();
+  }
+}
 };

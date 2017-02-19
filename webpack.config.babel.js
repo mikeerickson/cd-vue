@@ -3,7 +3,6 @@
 import path   from 'path';
 import core   from 'cd-core';
 import config from './config';
-import merge  from 'webpack-merge';
 
 import WebpackShellPlugin    from '@slightlytyler/webpack-shell-plugin';
 import WatchIgnorePlugin     from 'watch-ignore-webpack-plugin';
@@ -14,7 +13,7 @@ const isProd  = (process.env.ENV === 'production') || (process.env.NODE_ENV === 
 const isDev   = !isProd;
 
 let webpackConfig = {
-	entry: config.scripts.entry,  // use config
+	entry: config.path.entry,  // use config
 	output: {
 		path: path.join(__dirname, 'public', 'js'),
 		filename: 'bundle.js'
@@ -22,7 +21,7 @@ let webpackConfig = {
 	module: {
 		rules: [
 			{test: /(\.scss|\.sass)$/, loaders: ['style-loader','css-loader', 'sass-loader'], exclude: /(node_modules)/},
-			{test: /(\.jsx|\.js)$/, loaders: ['babel-loader', 'eslint-loader'], exclude: /(node_modules)/},
+			{test: /(\.jsx|\.js)$/, loaders: ['babel-loader'], exclude: /(node_modules)/},
       {
         test: /\.vue$/,
         loader: 'vue-loader',
@@ -51,7 +50,7 @@ let webpackConfig = {
 			title:   'Bundle Scripts',
 			icon:    core.getPassIcon(),
 			sound:   true,
-			message: `${config.scripts.public}/bundle.js Created Successfully`
+			message: `${config.path.public}/bundle.js Created Successfully`
 		}),
 		new BrowserSyncPlugin({
 			host: 'localhost',
@@ -59,7 +58,10 @@ let webpackConfig = {
 			server: {
 				baseDir: ['public']
 			},
-			files: ['./public/**/*.*']
+			files: [
+			  config.path.sass,
+        './public/**/*.*'
+      ]
 		}),
  	],
 	resolve: {
