@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --config ./webpack.config.babel.js",
+    "build": "webpack --hide-modules --config ./webpack.config.babel.js",
     "build:dev": "npm run build -- -w",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint \"./src/**/*.js\"",
+    "test": "ava"
   },
   "keywords": [],
   "author": "Mike Erickson <codedungeon@gmail.com> (https://github.com/mikeerickson)",

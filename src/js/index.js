@@ -1,10 +1,11 @@
 const msg = require('cd-messenger');
 
 new Vue({
-	el: 'v-app',
+	el: '#v-app',
+	data: {},
 	methods: {},
 	computed: {},
-	mounted: function() {
+	mounted: () => {
 		msg.success('Vue Ready!');
 	}
 });

@@ -63,13 +63,12 @@ if (isDev) {
 	// webpackConfig.devtool = 'source-map';
 	webpackConfig.plugins.push(new WatchIgnorePlugin([
 		path.join(__dirname, 'package.json'),
-		path.join(__dirname, 'app/**/*.php'),
 		path.join(__dirname, 'tasks/**/*.js'),
-		path.join(__dirname, 'specs/**/*.spec.js'),
+		path.join(__dirname, 'test/**/*.spec.js'),
 		path.join(__dirname, 'sandbox/**/*'),
 	])),
 	webpackConfig.plugins.push(new WebpackShellPlugin({
-		onBuildStart: ['bash ./scripts/bump.sh'],  // need to bump version first before files copied etc
+		onBuildStart: [],  // 'bash ./scripts/bump.sh' // need to bump version first before files copied etc
 		onBuildExit: []
 	}));
 }
