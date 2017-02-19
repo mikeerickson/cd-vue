@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 32);
+/******/ 	return __webpack_require__(__webpack_require__.s = 33);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -291,10 +291,10 @@ module['exports'] = colors;
 
 colors.themes = {};
 
-var ansiStyles = colors.styles = __webpack_require__(21);
+var ansiStyles = colors.styles = __webpack_require__(22);
 var defineProps = Object.defineProperties;
 
-colors.supportsColor = __webpack_require__(22);
+colors.supportsColor = __webpack_require__(23);
 
 if (typeof colors.enabled === "undefined") {
   colors.enabled = colors.supportsColor;
@@ -413,15 +413,15 @@ var sequencer = function sequencer (map, str) {
 };
 
 // custom formatter methods
-colors.trap = __webpack_require__(15);
-colors.zalgo = __webpack_require__(16);
+colors.trap = __webpack_require__(16);
+colors.zalgo = __webpack_require__(17);
 
 // maps
 colors.maps = {};
-colors.maps.america = __webpack_require__(17);
-colors.maps.zebra = __webpack_require__(20);
-colors.maps.rainbow = __webpack_require__(18);
-colors.maps.random = __webpack_require__(19)
+colors.maps.america = __webpack_require__(18);
+colors.maps.zebra = __webpack_require__(21);
+colors.maps.rainbow = __webpack_require__(19);
+colors.maps.random = __webpack_require__(20)
 
 for (var map in colors.maps) {
   (function(map){
@@ -515,7 +515,7 @@ Object.defineProperty(module, 'exports', {
 	get: assembleStyles
 });
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(31)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(32)(module)))
 
 /***/ }),
 /* 4 */
@@ -672,9 +672,9 @@ module.exports = {
 /* WEBPACK VAR INJECTION */(function(process) {
 var escapeStringRegexp = __webpack_require__(6);
 var ansiStyles = __webpack_require__(3);
-var stripAnsi = __webpack_require__(26);
-var hasAnsi = __webpack_require__(24);
-var supportsColor = __webpack_require__(10);
+var stripAnsi = __webpack_require__(27);
+var hasAnsi = __webpack_require__(25);
+var supportsColor = __webpack_require__(11);
 var defineProps = Object.defineProperties;
 var isSimpleWindowsTerm = process.platform === 'win32' && !/^xterm/i.test(process.env.TERM);
 
@@ -813,20 +813,84 @@ module.exports = function (str) {
 /* WEBPACK VAR INJECTION */(function(process) {/*global require, process*/
 
 if (process.browser) {
-  let Browser = __webpack_require__(8);
+  let Browser = __webpack_require__(9);
   module.exports = new Browser(__webpack_require__(4));
 }
 else {
-  module.exports = __webpack_require__(9);
+  module.exports = __webpack_require__(10);
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
 /* 8 */
+/***/ (function(module, exports) {
+
+module.exports = {
+	"name": "cd-vue-starter",
+	"appName": "CodeDungeon VueJS Starter",
+	"version": "0.0.1",
+	"description": "CodeDungeon VueJS Starter",
+	"main": "index.js",
+	"scripts": {
+		"build": "webpack --hide-modules --config ./webpack.config.babel.js",
+		"build:dev": "npm run build -- -w",
+		"build:sass": "./node_modules/.bin/node-sass ./src/sass/app.scss > ./public/css/app.css",
+		"build:styles": "npm run build:sas",
+		"lint": "eslint \"./src/**/*.js\"",
+		"test": "ava"
+	},
+	"ava": {
+		"require": "babel-register"
+	},
+	"babel": {
+		"presets": [
+			"es2015"
+		]
+	},
+	"keywords": [],
+	"author": "Mike Erickson <codedungeon@gmail.com> (https://github.com/mikeerickson)",
+	"license": "MIT",
+	"dependencies": {
+		"vue": "2.1.10"
+	},
+	"devDependencies": {
+		"@slightlytyler/webpack-shell-plugin": "0.4.5",
+		"ava": "0.18.2",
+		"babel-core": "6.23.1",
+		"babel-eslint": "7.1.1",
+		"babel-loader": "6.3.2",
+		"babel-preset-es2015": "6.22.0",
+		"babel-register": "6.23.0",
+		"bootstrap-sass": "3.3.7",
+		"browser-env": "2.0.21",
+		"browser-sync": "2.18.8",
+		"browser-sync-webpack-plugin": "1.1.4",
+		"cd-core": "0.0.11",
+		"cd-messenger": "2.7.16",
+		"chalk": "1.1.3",
+		"css-loader": "0.26.1",
+		"eslint": "3.15.0",
+		"eslint-loader": "1.6.1",
+		"file-loader": "0.10.0",
+		"node-sass": "4.5.0",
+		"sass-loader": "6.0.1",
+		"style-loader": "0.13.1",
+		"vue-loader": "11.0.0",
+		"vue-style-loader": "2.0.0",
+		"watch-ignore-webpack-plugin": "1.0.0",
+		"webpack": "2.2.1",
+		"webpack-dev-server": "2.3.0",
+		"webpack-merge": "2.6.1",
+		"webpack-notifier": "1.5.0"
+	}
+};
+
+/***/ }),
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
-let logger = __webpack_require__(25);
+let logger = __webpack_require__(26);
 
 function showColorMessage(msg, bgColor = 'white', ...params) {
   let mgStyle = `background: ${bgColor}; color: white; display: block;`;
@@ -889,13 +953,13 @@ module.exports = MessengerBrowser;
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
 const chalk   = __webpack_require__(5);
-const cl      = __webpack_require__(11);
-const Table   = __webpack_require__(12);
+const cl      = __webpack_require__(12);
+const Table   = __webpack_require__(13);
 const pkgInfo = __webpack_require__(4);
 
 const CLI_ICON_FAIL = '✘';
@@ -978,7 +1042,7 @@ module.exports = messenger;
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1036,7 +1100,7 @@ module.exports = (function () {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {
@@ -1047,7 +1111,7 @@ var escapeStringRegexp = __webpack_require__(6);
 var defineProps = Object.defineProperties;
 var isSimpleWindowsTerm = process.platform === 'win32' && !/^xterm/i.test(process.env.TERM);
 var ansiStyles = __webpack_require__(3);
-var util = __webpack_require__(29);
+var util = __webpack_require__(30);
 var chalk = __webpack_require__(5);
 var block = "\u2588";
 
@@ -1159,7 +1223,7 @@ module.exports = new Chalkline();
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -1167,8 +1231,8 @@ module.exports = new Chalkline();
  * Module dependencies.
  */
 
-var colors = __webpack_require__(23)
-  , utils = __webpack_require__(13)
+var colors = __webpack_require__(24)
+  , utils = __webpack_require__(14)
   , repeat = utils.repeat
   , truncate = utils.truncate
   , pad = utils.pad;
@@ -1463,7 +1527,7 @@ module.exports.version = '0.0.1';
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports) {
 
 
@@ -1553,7 +1617,7 @@ exports.strlen = function(str){
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports) {
 
 function webpackEmptyContext(req) {
@@ -1562,11 +1626,11 @@ function webpackEmptyContext(req) {
 webpackEmptyContext.keys = function() { return []; };
 webpackEmptyContext.resolve = webpackEmptyContext;
 module.exports = webpackEmptyContext;
-webpackEmptyContext.id = 14;
+webpackEmptyContext.id = 15;
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports) {
 
 module['exports'] = function runTheTrap (text, options) {
@@ -1617,7 +1681,7 @@ module['exports'] = function runTheTrap (text, options) {
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports) {
 
 // please no
@@ -1727,7 +1791,7 @@ module['exports'] = function zalgo(text, options) {
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var colors = __webpack_require__(1);
@@ -1744,7 +1808,7 @@ module['exports'] = (function() {
 })();
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var colors = __webpack_require__(1);
@@ -1763,7 +1827,7 @@ module['exports'] = (function () {
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var colors = __webpack_require__(1);
@@ -1776,7 +1840,7 @@ module['exports'] = (function () {
 })();
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var colors = __webpack_require__(1);
@@ -1786,7 +1850,7 @@ module['exports'] = function (letter, i, exploded) {
 };
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports) {
 
 /*
@@ -1868,7 +1932,7 @@ Object.keys(codes).forEach(function (key) {
 });
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {/*
@@ -1935,7 +1999,7 @@ module.exports = (function () {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //
@@ -1949,7 +2013,7 @@ var colors = __webpack_require__(1);
 module['exports'] = colors;
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1960,7 +2024,7 @@ module.exports = re.test.bind(re);
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2025,7 +2089,7 @@ module.exports = {
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2038,7 +2102,7 @@ module.exports = function (str) {
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports) {
 
 if (typeof Object.create === 'function') {
@@ -2067,7 +2131,7 @@ if (typeof Object.create === 'function') {
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports) {
 
 module.exports = function isBuffer(arg) {
@@ -2078,7 +2142,7 @@ module.exports = function isBuffer(arg) {
 }
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -2606,7 +2670,7 @@ function isPrimitive(arg) {
 }
 exports.isPrimitive = isPrimitive;
 
-exports.isBuffer = __webpack_require__(28);
+exports.isBuffer = __webpack_require__(29);
 
 function objectToString(o) {
   return Object.prototype.toString.call(o);
@@ -2650,7 +2714,7 @@ exports.log = function() {
  *     prototype.
  * @param {function} superCtor Constructor function to inherit prototype from.
  */
-exports.inherits = __webpack_require__(27);
+exports.inherits = __webpack_require__(28);
 
 exports._extend = function(origin, add) {
   // Don't do anything if add isn't an object
@@ -2668,10 +2732,10 @@ function hasOwnProperty(obj, prop) {
   return Object.prototype.hasOwnProperty.call(obj, prop);
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(30), __webpack_require__(0)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(31), __webpack_require__(0)))
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports) {
 
 var g;
@@ -2698,7 +2762,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -2726,14 +2790,15 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var msg = __webpack_require__(7);
-var pkgInfo = __webpack_require__(33);
+var pkgInfo = __webpack_require__(8);
+
 // application wide sass (each component may have their own sass as well)
 // import '!style-loader!css-loader!sass-loader!../sass/app.scss';
 
@@ -2749,61 +2814,6 @@ new Vue({
 		msg.success(' === ' + this.appName + ' Vue Ready === ');
 	}
 });
-
-/***/ }),
-/* 33 */
-/***/ (function(module, exports) {
-
-module.exports = {
-	"name": "cd-vue-starter",
-	"appName": "CodeDungeon VueJS Starter",
-	"version": "0.0.1",
-	"description": "CodeDungeon VueJS Starter",
-	"main": "index.js",
-	"scripts": {
-		"build": "webpack --hide-modules --config ./webpack.config.babel.js",
-		"build:dev": "npm run build -- -w",
-		"build:sass": "./node_modules/.bin/node-sass ./src/sass/app.scss > ./public/css/app.css",
-		"build:styles": "npm run build:sas",
-		"lint": "eslint \"./src/**/*.js\"",
-		"test": "ava"
-	},
-	"keywords": [],
-	"author": "Mike Erickson <codedungeon@gmail.com> (https://github.com/mikeerickson)",
-	"license": "MIT",
-	"dependencies": {
-		"vue": "2.1.10"
-	},
-	"devDependencies": {
-		"@slightlytyler/webpack-shell-plugin": "0.4.5",
-		"ava": "0.18.2",
-		"babel-core": "6.23.1",
-		"babel-eslint": "7.1.1",
-		"babel-loader": "6.3.2",
-		"babel-preset-es2015": "6.22.0",
-		"babel-register": "6.23.0",
-		"bootstrap-sass": "3.3.7",
-		"browser-sync": "2.18.8",
-		"browser-sync-webpack-plugin": "1.1.4",
-		"cd-core": "0.0.11",
-		"cd-messenger": "2.7.16",
-		"chalk": "1.1.3",
-		"css-loader": "0.26.1",
-		"eslint": "3.15.0",
-		"eslint-loader": "1.6.1",
-		"file-loader": "0.10.0",
-		"node-sass": "4.5.0",
-		"sass-loader": "6.0.1",
-		"style-loader": "0.13.1",
-		"vue-loader": "11.0.0",
-		"vue-style-loader": "2.0.0",
-		"watch-ignore-webpack-plugin": "1.0.0",
-		"webpack": "2.2.1",
-		"webpack-dev-server": "2.3.0",
-		"webpack-merge": "2.6.1",
-		"webpack-notifier": "1.5.0"
-	}
-};
 
 /***/ })
 /******/ ]);
