@@ -20,6 +20,7 @@
     let $        = require('jquery');
     let msg      = require('cd-messenger');
     let isTruthy = require('truthy');
+    let swal     = require('sweetalert2');
 
     export default {
     	props: ['model', 'fields', 'header', 'footer'],
@@ -68,14 +69,37 @@
             evt.preventDefault();
             let errors = formValidation(evt, fields, model);
             if (errors.length > 0) {
-                msg.error('Handle Errors Here');
                 handleFormErrors(errors);
+                errorDialog(`Form contains ${errors.length} ${errors.length > 1 ? 'errors' : 'error'}`);
                 return false;
             }
+
+            successDialog('Form Validation Passed');
             msg.success('Handle Form Submit');
+
         },
       }
 	};
+
+    function errorDialog(msg, options = {icon: true}) {
+        swal({
+            title: 'Error!',
+            width: 300,
+            type: options.icon ? 'error' : '',
+            text: msg,
+            confirmButtonText: 'Abort'
+        });
+    }
+
+    function successDialog(msg, options = {icon: true}) {
+        swal({
+            title: 'Success!',
+            width: 300,
+            text: msg,
+            type: options.icon ? 'success' : '',
+            confirmButtonText: 'OK'
+        });
+    }
 
 	function buildInput(field, data) {
 		let value = getValue(field.key, data);
@@ -124,7 +148,7 @@
                 }
                 else {
                     msg.error(`[${field.key}] Configuration Error (Invalid Choices)`);
-                }
+				}
                 break;
           case 'textarea':
             obj = `<label for="${field.key}">${field.label}</label> <br />
