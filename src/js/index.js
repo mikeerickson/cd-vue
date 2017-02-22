@@ -24,15 +24,15 @@ new Vue({
 			{type: 'html', value: '<br /><br />'}
 		],
     footer: [
-    	{type: 'button', label: 'Submit'}
+			{type: 'button', label: 'Submit'}
 		],
     fields: [
 			{key: 'fname', type: 'text', label: 'First Name', required: true, validators: [
-				{length: "value.length > 3", errorMsg: "First Name must be at least 3 characters"},
-				{value: "value === 'Brady'", errorMsg: "First Name must be Brady"}
+				{length: 'value.length > 3', errorMsg: 'First Name must be at least 3 characters'},
+				{value: 'value === \'Brady\'', errorMsg: 'First Name must be Brady'}
 			]},
 			{key: 'lname', type: 'text', label: 'Last Name', validators: [
-				{value: "value === 'Erickson'", errorMsg: "Last Name must be Erickson"}
+				{value: 'value === \'Erickson\'', errorMsg: 'Last Name must be Erickson'}
 			]},
 			{key: 'dob', type: 'date', label: 'DOB'},
 			{key: 'state', type: 'select', label: 'State', options: states, validators: [
@@ -42,10 +42,10 @@ new Vue({
 				{value: "value !== ''"}
 			]},
 			{key: 'married', type: 'checkbox', label: 'Married', validators: [
-				{value: "isTruthy(value)"}
+				{value: 'isTruthy(value)'}
 			]},
 			{key: 'bio', type: 'textarea', label: 'Biography', attrs: {rows: 5, cols: 65}, validators: [
-				{length: "value.length > 10"}
+				{length: 'value.length > 10'}
 			]}
 		],
     model: [

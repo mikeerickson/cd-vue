@@ -22,9 +22,9 @@
     let isTruthy = require('truthy');
 
     export default {
-	  props: ['model', 'fields', 'header', 'footer'],
+    	props: ['model', 'fields', 'header', 'footer'],
       data() {
-      	return {
+        return {
           data: {},
           formFields: this.fields,
           formModel: this.model
@@ -32,32 +32,32 @@
       },
       methods: {
         formLabel: (field) => {
-					let obj = '';
-					if ((field.type === 'select') || (field.type === 'text') || (field.type === 'date')) {
-						obj += `<label for="${field.key}">${field.label}</label>`;
-						if(field.type === 'select') {
-							obj += '<br />';
-                        }
-					}
-					return obj;
-				},
-	  	formInput: (field, data) => {
+            let obj = '';
+            if ((field.type === 'select') || (field.type === 'text') || (field.type === 'date')) {
+                obj += `<label for="${field.key}">${field.label}</label>`;
+                if (field.type === 'select') {
+                    obj += '<br />';
+                }
+            }
+            return obj;
+        },
+        formInput: (field, data) => {
           return buildInput(field, data);
         },
         formObject: (item) => {
-        	let obj = '';
-        	switch(item.type) {
+            let obj = '';
+            switch (item.type) {
               case 'html':
-              	obj = item.value;
-              	break;
+                obj = item.value;
+                break;
               case 'button':
-			    obj = '<' + item.type + '>' + item.label + '</' + item.type + '>';
-			    break;
+                obj = '<' + item.type + '>' + item.label + '</' + item.type + '>';
+                break;
             }
-        	return obj;
+            return obj;
         },
         formValue: (key, data) => {
-			return(getValue(key, data));
+          return (getValue(key, data));
         },
         formValidation: () => {},
         handleFormChange: (evt, fields, model) => {
@@ -65,14 +65,14 @@
 			return handleFormErrors(errors);
         },
         handleFormSubmit: (evt, fields, model) => {
-	  		evt.preventDefault();
-	  		let errors = formValidation(evt, fields, model);
-	  		if(errors.length > 0) {
-	  			msg.error('Handle Errors Here');
-	  			handleFormErrors(errors);
-	  			return false;
+            evt.preventDefault();
+            let errors = formValidation(evt, fields, model);
+            if (errors.length > 0) {
+                msg.error('Handle Errors Here');
+                handleFormErrors(errors);
+                return false;
             }
-	  		msg.success('Handle Form Submit');
+            msg.success('Handle Form Submit');
         },
       }
 	};
@@ -80,15 +80,15 @@
 	function buildInput(field, data) {
 		let value = getValue(field.key, data);
         let obj   = '';
-        switch(field.type) {
+        switch (field.type) {
           case 'text':
             obj = `<input
                 type="${field.type}"
                 id="${field.key}"
                 name="${field.key}"
                 class="form-control"
-                value="${value}" ${field.readonly ? 'readonly': ''}
-                ${field.disabled ? 'disabled': ''}
+                value="${value}" ${field.readonly ? 'readonly' : ''}
+                ${field.disabled ? 'disabled' : ''}
                 required="${field.required}"
             />`;
             break;
@@ -121,7 +121,8 @@
                               value="${choice.toLowerCase()}" ${disabled}> ${values[idx]} &nbsp;
                           `;
                     });
-                } else {
+                }
+                else {
                     msg.error(`[${field.key}] Configuration Error (Invalid Choices)`);
                 }
                 break;
@@ -130,20 +131,20 @@
                  <textarea id="${field.key}" name="${field.key}" ${addAttributes(field.attrs)}>${value}</textarea>`;
             break;
           case 'select':
-          	let options = '';
-          	field.options.forEach((item) => {
-          		options += `<option ${item.name === value ? 'selected' : ''} name=${item.name}>${item.value}</option>`;
+            let options = '';
+            field.options.forEach((item) => {
+                options += `<option ${item.name === value ? 'selected' : ''} name=${item.name}>${item.value}</option>`;
             });
-          	obj = `<select id="${field.key}" name="${field.key}">${options}</select>`;
-          	break;
+            obj = `<select id="${field.key}" name="${field.key}">${options}</select>`;
+            break;
           default:
             obj = `<input
                 type="${field.type}"
                 id="${field.key}"
                 name="${field.key}"
                 class="form-control"
-                value="${value}" ${field.readonly ? 'readonly': ''}
-                ${field.disabled ? 'disabled': ''}
+                value="${value}" ${field.readonly ? 'readonly' : ''}
+                ${field.disabled ? 'disabled' : ''}
                 required="${field.required}"
             />`;
             break;
@@ -153,7 +154,7 @@
     }
 
     function getValue(key, data) {
-        let result = data.find((field) => { return field.key == key; })
+        let result = data.find((field) => { return field.key === key; });
         return result ? result.value : '';
     }
 
@@ -161,7 +162,7 @@
 		let result = '';
 		let keys   = Object.keys(attrs);
 		let values = Object.values(attrs);
-		for(let i = 0; i < keys.length; i++) {
+		for (let i = 0; i < keys.length; i++) {
 			result += ' ' + keys[i] + '=' + values[i];
         }
         return result;
@@ -174,28 +175,28 @@
 
 		fields.forEach((input, idx, fields, model) => {
 			let value = '';
-			for(let i = 0; i < form.length; i++) {
-				if(form[i].id === input.key) {
+			for (let i = 0; i < form.length; i++) {
+				if (form[i].id === input.key) {
 					value = form[i].value;
                 }
             }
 			let validators = input.validators;
-			if(input.hasOwnProperty('validators')) {
-                for(let i = 0; i < validators.length; i++) {
-                	let validator = validators[i];
+			if (input.hasOwnProperty('validators')) {
+                for (let i = 0; i < validators.length; i++) {
+                    let validator = validators[i];
                     let errorMsg  = validator.hasOwnProperty('errorMsg') ? validator.errorMsg : '';
-                	let result    = false;
+                    let result    = false;
                     let key       = Object.keys(validators[i])[0];
                     let rule      = validators[i][key].replace('model','value');
 
-                    if(rule === 'isTruthy(value)') {
-                    	result = isTruthy(value);
+                    if (rule === 'isTruthy(value)') {
+                        result = isTruthy(value);
                     }
                     else {
                         result = eval(rule);
                     }
 
-                    if(!result) {
+                    if (!result) {
                         errors.push({
                           key:      fields[idx].key,
                           rule:     rule,
@@ -204,31 +205,34 @@
                           errorMsg: errorMsg
                         });
                         let node = $(`#${fields[idx].key}`);
-                        if(node.type === 'checkbox') {
-                        	node = $(`label[for="${fields[idx].key}"]`);
-                        	if (node.hasClass('form-it-dirty')) {
+                        if (node.type === 'checkbox') {
+                            node = $(`label[for="${fields[idx].key}"]`);
+                            if (node.hasClass('form-it-dirty')) {
                                 node.addClass('form-it-clean-checkbox');
                                 node.removeClass('form-it-error-checkbox');
                             }
-                        } else {
-                            if(node.hasClass('form-it-dirty') > 0) {
+                        }
+                        else {
+                            if (node.hasClass('form-it-dirty') > 0) {
                                 node.addClass('form-it-clean');
                                 node.removeClass('form-it-error');
                             }
                         }
-                    } else {
+                    }
+                    else {
                         let errorBlock = $(`#error-${fields[idx].key}`);
 						errorBlock.addClass('hide');
 						let node = $(`#${fields[idx].key}`);
-						if(fields[idx].type === 'checkbox') {
+						if (fields[idx].type === 'checkbox') {
                             node = $(`label[for="${fields[idx].key}"]`);
-						    node.removeClass('form-it-error-checkbox');
-                            if(node.hasClass('form-it-dirty')) {
+                            node.removeClass('form-it-error-checkbox');
+                            if (node.hasClass('form-it-dirty')) {
                                 node.addClass('form-it-clean-checkbox');
                             }
-                        } else {
+                        }
+                        else {
                             node.removeClass('form-it-error');
-							if(node.hasClass('form-it-dirty')) {
+							if (node.hasClass('form-it-dirty')) {
 								node.addClass('form-it-clean');
                             }
                         }
@@ -249,12 +253,13 @@
 
 		errors.forEach((error) => {
 			let id = error.key;
-			if(error.type === 'checkbox') {
+			if (error.type === 'checkbox') {
 				let node = $(`label[for="${id}"]`);
                 node.removeClass('form-it-clean-checkbox');
                 node.addClass('form-it-error-checkbox');
                 node.addClass('form-it-dirty');
-            } else {
+            }
+            else {
                 let node = $(`#${id}`);
                 node.removeClass('form-it-clean');
                 node.addClass('form-it-error');

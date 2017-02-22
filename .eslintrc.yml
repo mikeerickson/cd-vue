@@ -3,6 +3,8 @@
 # When adding rules, be sure to sort them, e.g. vim :'<,'>sort
 root: true
 parser: esprima
+plugins:
+  - vue
 parserOptions:
   sourceType: module
 rules:
@@ -34,7 +36,7 @@ rules:
   eqeqeq: 1 # fixable
   no-alert: 1
   no-caller: 2
-  no-eval: 2
+  no-eval: 0
   no-extend-native: 1
   no-extra-bind: 1
   no-floating-decimal: 1
