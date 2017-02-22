@@ -1,11 +1,16 @@
 <template id="form-it">
     <div class="form-it">
         <form class="form-it-form" @change="handleFormChange($event, fields, model)" @submit="handleFormSubmit($event, fields, model)">
+            <div v-for="item in header" class="form-it-footer">
+                <span v-html="formObject(item)"></span>
+            </div>
             <div v-for="field in fields" class="form-group">
                 <span v-html="formLabel(field)"></span>
                 <span v-html="formInput(field, model)"></span>
             </div>
-            <button>Submit</button>
+            <div v-for="item in footer" class="form-it-footer">
+                <span v-html="formObject(item)"></span>
+            </div>
         </form>
     </div>
 </template>
@@ -17,7 +22,7 @@
     let isTruthy = require('truthy');
 
     export default {
-	  props: ['model', 'fields'],
+	  props: ['model', 'fields', 'header', 'footer'],
       data() {
       	return {
           data: {},
@@ -38,6 +43,18 @@
 				},
 	  	formInput: (field, data) => {
           return buildInput(field, data);
+        },
+        formObject: (item) => {
+        	let obj = '';
+        	switch(item.type) {
+              case 'html':
+              	obj = item.value;
+              	break;
+              case 'button':
+			    obj = '<' + item.type + '>' + item.label + '</' + item.type + '>';
+			    break;
+            }
+        	return obj;
         },
         formValue: (key, data) => {
 			return(getValue(key, data));
@@ -289,5 +306,10 @@
     }
     form.form-it-form .form-it-dirty.form-it-clean-checkbox {
         color: green;
+    }
+    form.form-it-form {
+        border: 3px solid lightyellow;
+        border-radius: 6px;
+        padding: 10px;
     }
 </style>

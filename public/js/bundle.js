@@ -9470,17 +9470,22 @@ module.exports = Vue$3;
 module.exports = {
 	"name": "cd-vue-starter",
 	"appName": "CodeDungeon VueJS Starter",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"description": "CodeDungeon VueJS Starter",
 	"main": "index.js",
 	"scripts": {
 		"build": "webpack --hide-modules --config ./webpack.config.babel.js",
 		"build:dev": "npm run build -- -w",
 		"build:sass": "./node_modules/.bin/node-sass ./src/sass/app.scss > ./public/css/app.css",
-		"build:styles": "npm run build:sas",
+		"build:styles": "npm run build:sass",
 		"lint": "eslint \"./src/**/*.js\"",
+		"lint:watch": "./node_modules/.bin/esw \"./src/**/*.js\" --watch",
+		"sass:watch": "npm run build:sass",
+		"styles:watch": "npm run build:sass",
 		"test": "ava",
-		"test:mocha": "mocha --compilers js:babel-core/register --require jsdom-global/register specs/**/*Spec.js"
+		"test:mocha": "mocha --compilers js:babel-core/register --require jsdom-global/register specs/**/*Spec.js",
+		"test:mocha:watch": "npm run test:mocha -- -w",
+		"test:watch": "ava --watch"
 	},
 	"ava": {
 		"require": [
@@ -9497,6 +9502,9 @@ module.exports = {
 	"author": "Mike Erickson <codedungeon@gmail.com> (https://github.com/mikeerickson)",
 	"license": "MIT",
 	"dependencies": {
+		"chokidar": "1.6.1",
+		"jquery": "3.1.1",
+		"truthy": "0.0.1",
 		"vue": "2.1.10"
 	},
 	"devDependencies": {
@@ -9518,6 +9526,7 @@ module.exports = {
 		"css-loader": "0.26.1",
 		"eslint": "3.15.0",
 		"eslint-loader": "1.6.1",
+		"eslint-watch": "3.0.0",
 		"file-loader": "0.10.0",
 		"jsdom": "9.11.0",
 		"jsdom-global": "2.1.1",
@@ -9527,6 +9536,7 @@ module.exports = {
 		"style-loader": "0.13.1",
 		"vue-loader": "11.0.0",
 		"vue-style-loader": "2.0.0",
+		"vue-template-compiler": "2.1.10",
 		"watch-ignore-webpack-plugin": "1.0.0",
 		"webpack": "2.2.1",
 		"webpack-dev-server": "2.3.0",
@@ -9557,6 +9567,11 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 var $ = __webpack_require__(32);
@@ -9564,7 +9579,7 @@ var msg = __webpack_require__(2);
 var isTruthy = __webpack_require__(35);
 
 exports.default = {
-    props: ['model', 'fields'],
+    props: ['model', 'fields', 'header', 'footer'],
     data: function data() {
         return {
             data: {},
@@ -9586,6 +9601,18 @@ exports.default = {
         },
         formInput: function formInput(field, data) {
             return buildInput(field, data);
+        },
+        formObject: function formObject(item) {
+            var obj = '';
+            switch (item.type) {
+                case 'html':
+                    obj = item.value;
+                    break;
+                case 'button':
+                    obj = '<' + item.type + '>' + item.label + '</' + item.type + '>';
+                    break;
+            }
+            return obj;
         },
         formValue: function formValue(key, data) {
             return getValue(key, data);
@@ -10907,7 +10934,7 @@ exports = module.exports = __webpack_require__(30)();
 
 
 // module
-exports.push([module.i, "\nform.form-it-form .form-it-error {\n    background: pink;\n    border: 1px solid red;\n}\nform.form-it-form .form-it-error-block {\n    margin-top: 3px;\n    padding-left: 5px;\n    padding-right: 5px;\n    background: pink;\n    border: 1px solid red;\n    border-radius: 3px;\n    font-size: .8em;\n    color: red;\n    font-weight: bold;\n}\nform.form-it-form .form-it-clean {\n    background: lightgreen;\n    border: 1px solid green;\n}\nform.form-it-form .form-it-error-checkbox {\n    color: red;\n}\nform.form-it-form .form-it-clean-checkbox {\n    color: black;\n}\nform.form-it-form .form-it-dirty.form-it-clean-checkbox {\n    color: green;\n}\n", ""]);
+exports.push([module.i, "\nform.form-it-form .form-it-error {\n    background: pink;\n    border: 1px solid red;\n}\nform.form-it-form .form-it-error-block {\n    margin-top: 3px;\n    padding-left: 5px;\n    padding-right: 5px;\n    background: pink;\n    border: 1px solid red;\n    border-radius: 3px;\n    font-size: .8em;\n    color: red;\n    font-weight: bold;\n}\nform.form-it-form .form-it-clean {\n    background: lightgreen;\n    border: 1px solid green;\n}\nform.form-it-form .form-it-error-checkbox {\n    color: red;\n}\nform.form-it-form .form-it-clean-checkbox {\n    color: black;\n}\nform.form-it-form .form-it-dirty.form-it-clean-checkbox {\n    color: green;\n}\nform.form-it-form {\n    border: 3px solid lightyellow;\n    border-radius: 6px;\n    padding: 10px;\n}\n", ""]);
 
 // exports
 
@@ -22033,7 +22060,15 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.handleFormSubmit($event, _vm.fields, _vm.model)
       }
     }
-  }, [_vm._l((_vm.fields), function(field) {
+  }, [_vm._l((_vm.header), function(item) {
+    return _c('div', {
+      staticClass: "form-it-footer"
+    }, [_c('span', {
+      domProps: {
+        "innerHTML": _vm._s(_vm.formObject(item))
+      }
+    })])
+  }), _vm._v(" "), _vm._l((_vm.fields), function(field) {
     return _c('div', {
       staticClass: "form-group"
     }, [_c('span', {
@@ -22045,7 +22080,15 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         "innerHTML": _vm._s(_vm.formInput(field, _vm.model))
       }
     })])
-  }), _vm._v(" "), _c('button', [_vm._v("Submit")])], 2)])
+  }), _vm._v(" "), _vm._l((_vm.footer), function(item) {
+    return _c('div', {
+      staticClass: "form-it-footer"
+    }, [_c('span', {
+      domProps: {
+        "innerHTML": _vm._s(_vm.formObject(item))
+      }
+    })])
+  })], 2)])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -22401,6 +22444,8 @@ new Vue({
 		appName: pkgInfo.appName,
 		appVersion: pkgInfo.version,
 		states: states,
+		header: [{ type: 'html', value: '<h3>Form Header Value</h3>' }, { type: 'button', label: 'Submit' }, { type: 'html', value: '<br /><br />' }],
+		footer: [{ type: 'button', label: 'Submit' }],
 		fields: [{ key: 'fname', type: 'text', label: 'First Name', required: true, validators: [{ length: "value.length > 3", errorMsg: "First Name must be at least 3 characters" }, { value: "value === 'Brady'", errorMsg: "First Name must be Brady" }] }, { key: 'lname', type: 'text', label: 'Last Name', validators: [{ value: "value === 'Erickson'", errorMsg: "Last Name must be Erickson" }] }, { key: 'dob', type: 'date', label: 'DOB' }, { key: 'state', type: 'select', label: 'State', options: states, validators: [{ value: "value === 'CA'" }] }, { key: 'gender', type: 'radio', label: 'Gender', choices: { male: 'Male', female: 'Female' }, validators: [{ value: "value !== ''" }] }, { key: 'married', type: 'checkbox', label: 'Married', validators: [{ value: "isTruthy(value)" }] }, { key: 'bio', type: 'textarea', label: 'Biography', attrs: { rows: 5, cols: 65 }, validators: [{ length: "value.length > 10" }] }],
 		model: [{ key: 'fname', value: 'Brady' }, { key: 'lname', value: 'Erickson' }, { key: 'dob', value: '1993-02-28' }, { key: 'bio', value: 'now is the time for all good men to come the aid of their country and fight, fight for the right to win!  Impeach Trump!' }, { key: 'state', value: 'ca' }, { key: 'gender', value: 'male' }, { key: 'married', value: true }]
 	},

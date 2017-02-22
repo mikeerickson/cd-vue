@@ -17,7 +17,15 @@ new Vue({
 	data: {
 		appName:    pkgInfo.appName,
     appVersion: pkgInfo.version,
-    states: states,
+    states:     states,
+    header: [
+			{type: 'html', value: '<h3>Form Header Value</h3>'},
+			{type: 'button', label: 'Submit'},
+			{type: 'html', value: '<br /><br />'}
+		],
+    footer: [
+    	{type: 'button', label: 'Submit'}
+		],
     fields: [
 			{key: 'fname', type: 'text', label: 'First Name', required: true, validators: [
 				{length: "value.length > 3", errorMsg: "First Name must be at least 3 characters"},
