@@ -9470,22 +9470,17 @@ module.exports = Vue$3;
 module.exports = {
 	"name": "cd-vue-starter",
 	"appName": "CodeDungeon VueJS Starter",
-	"version": "0.1.0",
+	"version": "0.0.1",
 	"description": "CodeDungeon VueJS Starter",
 	"main": "index.js",
 	"scripts": {
 		"build": "webpack --hide-modules --config ./webpack.config.babel.js",
 		"build:dev": "npm run build -- -w",
 		"build:sass": "./node_modules/.bin/node-sass ./src/sass/app.scss > ./public/css/app.css",
-		"build:styles": "npm run build:sass",
+		"build:styles": "npm run build:sas",
 		"lint": "eslint \"./src/**/*.js\"",
-		"lint:watch": "./node_modules/.bin/esw \"./src/**/*.js\" --watch",
-		"sass:watch": "npm run build:sass",
-		"styles:watch": "npm run build:sass",
 		"test": "ava",
-		"test:mocha": "mocha --compilers js:babel-core/register --require jsdom-global/register specs/**/*Spec.js",
-		"test:mocha:watch": "npm run test:mocha -- -w",
-		"test:watch": "ava --watch"
+		"test:mocha": "mocha --compilers js:babel-core/register --require jsdom-global/register specs/**/*Spec.js"
 	},
 	"ava": {
 		"require": [
@@ -9502,9 +9497,6 @@ module.exports = {
 	"author": "Mike Erickson <codedungeon@gmail.com> (https://github.com/mikeerickson)",
 	"license": "MIT",
 	"dependencies": {
-		"chokidar": "1.6.1",
-		"jquery": "3.1.1",
-		"truthy": "0.0.1",
 		"vue": "2.1.10"
 	},
 	"devDependencies": {
@@ -9526,7 +9518,6 @@ module.exports = {
 		"css-loader": "0.26.1",
 		"eslint": "3.15.0",
 		"eslint-loader": "1.6.1",
-		"eslint-watch": "3.0.0",
 		"file-loader": "0.10.0",
 		"jsdom": "9.11.0",
 		"jsdom-global": "2.1.1",
@@ -9536,7 +9527,6 @@ module.exports = {
 		"style-loader": "0.13.1",
 		"vue-loader": "11.0.0",
 		"vue-style-loader": "2.0.0",
-		"vue-template-compiler": "2.1.10",
 		"watch-ignore-webpack-plugin": "1.0.0",
 		"webpack": "2.2.1",
 		"webpack-dev-server": "2.3.0",

@@ -1,3 +1,7 @@
 .idea
 node_modules
 sandbox
+./public/js/bundle.js
+scripts/
+src/sass/partials/
+tasks/
