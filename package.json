@@ -1,7 +1,7 @@
 {
   "name": "cd-vue-starter",
   "appName": "CodeDungeon VueJS Starter",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "CodeDungeon VueJS Starter",
   "main": "index.js",
   "scripts": {
@@ -9,14 +9,14 @@
     "build:dev": "npm run build -- -w",
     "build:sass": "./node_modules/.bin/node-sass ./src/sass/app.scss > ./public/css/app.css",
     "build:styles": "npm run build:sass",
-    "sass:watch": "npm run build:sass",
-    "styles:watch": "npm run build:sass",
     "lint": "eslint \"./src/**/*.js\"",
     "lint:watch": "./node_modules/.bin/esw \"./src/**/*.js\" --watch",
+    "sass:watch": "npm run build:sass",
+    "styles:watch": "npm run build:sass",
     "test": "ava",
-    "test:watch": "ava --watch",
     "test:mocha": "mocha --compilers js:babel-core/register --require jsdom-global/register specs/**/*Spec.js",
-    "test:mocha:watch": "npm run test:mocha -- -w"
+    "test:mocha:watch": "npm run test:mocha -- -w",
+    "test:watch": "ava --watch"
   },
   "ava": {
     "require": [
@@ -34,6 +34,8 @@
   "license": "MIT",
   "dependencies": {
     "chokidar": "1.6.1",
+    "jquery": "3.1.1",
+    "truthy": "0.0.1",
     "vue": "2.1.10"
   },
   "devDependencies": {
@@ -65,6 +67,7 @@
     "style-loader": "0.13.1",
     "vue-loader": "11.0.0",
     "vue-style-loader": "2.0.0",
+    "vue-template-compiler": "2.1.10",
     "watch-ignore-webpack-plugin": "1.0.0",
     "webpack": "2.2.1",
     "webpack-dev-server": "2.3.0",

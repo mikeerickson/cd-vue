@@ -11,11 +11,12 @@ export default {
         return {
             counter: 0
         };
-},
+  },
 
-computed: {
-  notification() {
-    return this.message.toUpperCase();
+  computed: {
+    notification() {
+      return this.message.toUpperCase();
+    }
   }
-}
+
 };
