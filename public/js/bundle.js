@@ -9536,6 +9536,7 @@ module.exports = {
 		"node-sass": "4.5.0",
 		"sass-loader": "6.0.1",
 		"style-loader": "0.13.1",
+		"vue-json-tree-view": "2.0.3",
 		"vue-loader": "11.0.0",
 		"vue-style-loader": "2.0.0",
 		"vue-template-compiler": "2.1.10",
@@ -9557,54 +9558,45 @@ module.exports = {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
+var _jquery = __webpack_require__(32);
 
-var $ = __webpack_require__(32);
-var msg = __webpack_require__(2);
-var isTruthy = __webpack_require__(36);
-var swal = __webpack_require__(35);
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _cdMessenger = __webpack_require__(2);
+
+var _cdMessenger2 = _interopRequireDefault(_cdMessenger);
+
+var _truthy = __webpack_require__(36);
+
+var _truthy2 = _interopRequireDefault(_truthy);
+
+var _sweetalert = __webpack_require__(35);
+
+var _sweetalert2 = _interopRequireDefault(_sweetalert);
+
+var _FormItInput = __webpack_require__(53);
+
+var _FormItInput2 = _interopRequireDefault(_FormItInput);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
-    props: ['model', 'fields', 'header', 'footer'],
+    components: {
+        FormItInput: _FormItInput2.default
+    },
+    name: "form-it",
+    props: ['id', 'model', 'fields', 'header', 'footer'],
     data: function data() {
         return {
-            data: {},
+            formID: this.id,
+            formData: [],
             formFields: this.fields,
             formModel: this.model
         };
     },
 
     methods: {
-        formLabel: function formLabel(field) {
-            var obj = '';
-            if (field.type === 'select' || field.type === 'text' || field.type === 'date') {
-                obj += '<label for="' + field.key + '">' + field.label + '</label>';
-                if (field.type === 'select') {
-                    obj += '<br />';
-                }
-            }
-            return obj;
-        },
-        formInput: function formInput(field, data) {
-            return buildInput(field, data);
-        },
         formObject: function formObject(item) {
             var obj = '';
             switch (item.type) {
@@ -9617,34 +9609,81 @@ exports.default = {
             }
             return obj;
         },
-        formValue: function formValue(key, data) {
-            return getValue(key, data);
+        buildFieldError: function buildFieldError(item) {
+            return _buildFieldError(item);
         },
-        formValidation: function formValidation() {},
-        handleFormChange: function handleFormChange(evt, fields, model) {
-            var errors = formValidation(evt, fields, model);
+        handleFormChange: function handleFormChange(evt, fields) {
+            this.formData = updateFormData();
+            var errors = formValidation(evt, fields);
+            if (errors.length > 0) {
+                this.formData = this.formData.concat({ errors: errors });
+            }
             return handleFormErrors(errors);
         },
         handleFormSubmit: function handleFormSubmit(evt, fields, model) {
             evt.preventDefault();
+
+            this.formData = updateFormData();
             var errors = formValidation(evt, fields, model);
             if (errors.length > 0) {
+                this.formData = this.formData.concat({ errors: errors });
                 handleFormErrors(errors);
                 errorDialog('Form contains ' + errors.length + ' ' + (errors.length > 1 ? 'errors' : 'error'));
                 return false;
             }
 
-            successDialog('Form Validation Passed');
-            msg.success('Handle Form Submit');
+            //            successDialog('Form Validation Passed');
+            _cdMessenger2.default.success('Handle Form Submit');
         }
     }
-};
+}; //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
+
+function updateFormData() {
+    var form = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+    var formData = form ? form.target : document.querySelectorAll('.form-it-form')[0];
+    var data = [];
+    for (var i = 0; i < formData.length; i++) {
+        if (formData[i].id !== '') {
+            data.push({
+                id: formData[i].id,
+                value: formData[i].value,
+                required: formData[i].required
+            });
+        }
+    }
+
+    var resultData = [];
+    resultData.push({ form: { id: formData.id } });
+    resultData.push({ data: data });
+
+    return resultData;
+}
 
 function errorDialog(msg) {
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { icon: true };
 
-    swal({
+    (0, _sweetalert2.default)({
         title: 'Error!',
         width: 300,
         type: options.icon ? 'error' : '',
@@ -9656,7 +9695,7 @@ function errorDialog(msg) {
 function successDialog(msg) {
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { icon: true };
 
-    swal({
+    (0, _sweetalert2.default)({
         title: 'Success!',
         width: 300,
         text: msg,
@@ -9665,70 +9704,12 @@ function successDialog(msg) {
     });
 }
 
-function buildInput(field, data) {
-    var value = getValue(field.key, data);
-    var obj = '';
-    switch (field.type) {
-        case 'text':
-            obj = '<input\n                type="' + field.type + '"\n                id="' + field.key + '"\n                name="' + field.key + '"\n                class="form-control"\n                value="' + value + '" ' + (field.readonly ? 'readonly' : '') + '\n                ' + (field.disabled ? 'disabled' : '') + '\n                required="' + field.required + '"\n            />';
-            break;
-        case 'checkbox':
-            obj = '<input\n                type="' + field.type + '"\n                id="' + field.key + '"\n                name="' + field.key + '"\n                class="form-check-input"\n                ' + (field.readonly || field.disabled ? 'disabled' : '') + '\n                onClick="(this.checked ? this.value = true : this.value = false)"\n                ' + (isTruthy(value) ? 'checked' : '') + '\n                value="' + value + '"\n            /> <label for="' + field.key + '">' + field.label + '</label>';
-            break;
-        case 'radio':
-            var keys = Object.keys(field.choices);
-            var values = Object.values(field.choices);
-            if (keys.length > 1) {
-                keys.forEach(function (choice, idx) {
-                    var checked = value.toLowerCase() === choice.toLowerCase() ? 'checked' : '';
-                    var disabled = field.disabled ? 'disabled' : '';
-                    obj += '<input ' + checked + '\n                              type="radio"\n                              id="' + field.key + '"\n                              ' + checked + '\n                              ' + disabled + '\n                              name="' + field.key + '"\n                              value="' + choice.toLowerCase() + '" ' + disabled + '> ' + values[idx] + ' &nbsp;\n                          ';
-                });
-            } else {
-                msg.error('[' + field.key + '] Configuration Error (Invalid Choices)');
-            }
-            break;
-        case 'textarea':
-            obj = '<label for="' + field.key + '">' + field.label + '</label> <br />\n                 <textarea id="' + field.key + '" name="' + field.key + '" ' + addAttributes(field.attrs) + '>' + value + '</textarea>';
-            break;
-        case 'select':
-            var options = '';
-            field.options.forEach(function (item) {
-                options += '<option ' + (item.name === value ? 'selected' : '') + ' name=' + item.name + '>' + item.value + '</option>';
-            });
-            obj = '<select id="' + field.key + '" name="' + field.key + '">' + options + '</select>';
-            break;
-        default:
-            obj = '<input\n                type="' + field.type + '"\n                id="' + field.key + '"\n                name="' + field.key + '"\n                class="form-control"\n                value="' + value + '" ' + (field.readonly ? 'readonly' : '') + '\n                ' + (field.disabled ? 'disabled' : '') + '\n                required="' + field.required + '"\n            />';
-            break;
-    }
-    obj += buildFieldError(field);
-    return obj;
-}
-
-function getValue(key, data) {
-    var result = data.find(function (field) {
-        return field.key === key;
-    });
-    return result ? result.value : '';
-}
-
-function addAttributes(attrs) {
-    var result = '';
-    var keys = Object.keys(attrs);
-    var values = Object.values(attrs);
-    for (var i = 0; i < keys.length; i++) {
-        result += ' ' + keys[i] + '=' + values[i];
-    }
-    return result;
-}
-
-function formValidation(evt, fields, model) {
+function formValidation(evt, fields) {
     var event = evt;
     var form = evt.currentTarget;
     var errors = [];
 
-    fields.forEach(function (input, idx, fields, model) {
+    fields.forEach(function (input, idx, fields) {
         var value = '';
         for (var i = 0; i < form.length; i++) {
             if (form[i].id === input.key) {
@@ -9745,7 +9726,7 @@ function formValidation(evt, fields, model) {
                 var rule = validators[_i][key].replace('model', 'value');
 
                 if (rule === 'isTruthy(value)') {
-                    result = isTruthy(value);
+                    result = (0, _truthy2.default)(value);
                 } else {
                     result = eval(rule);
                 }
@@ -9758,9 +9739,9 @@ function formValidation(evt, fields, model) {
                         type: fields[idx].type,
                         errorMsg: errorMsg
                     });
-                    var node = $('#' + fields[idx].key);
+                    var node = (0, _jquery2.default)('#' + fields[idx].key);
                     if (node.type === 'checkbox') {
-                        node = $('label[for="' + fields[idx].key + '"]');
+                        node = (0, _jquery2.default)('label[for="' + fields[idx].key + '"]');
                         if (node.hasClass('form-it-dirty')) {
                             node.addClass('form-it-clean-checkbox');
                             node.removeClass('form-it-error-checkbox');
@@ -9772,11 +9753,11 @@ function formValidation(evt, fields, model) {
                         }
                     }
                 } else {
-                    var errorBlock = $('#error-' + fields[idx].key);
+                    var errorBlock = (0, _jquery2.default)('#error-' + fields[idx].key);
                     errorBlock.addClass('hide');
-                    var _node = $('#' + fields[idx].key);
+                    var _node = (0, _jquery2.default)('#' + fields[idx].key);
                     if (fields[idx].type === 'checkbox') {
-                        _node = $('label[for="' + fields[idx].key + '"]');
+                        _node = (0, _jquery2.default)('label[for="' + fields[idx].key + '"]');
                         _node.removeClass('form-it-error-checkbox');
                         if (_node.hasClass('form-it-dirty')) {
                             _node.addClass('form-it-clean-checkbox');
@@ -9798,23 +9779,23 @@ function handleFormErrors(errors) {
 
     // clear all errors, they will be recreated below
     errors.forEach(function (error) {
-        $('#error-' + error.key).html('');
+        (0, _jquery2.default)('#error-' + error.key).html('');
     });
 
     errors.forEach(function (error) {
         var id = error.key;
         if (error.type === 'checkbox') {
-            var node = $('label[for="' + id + '"]');
+            var node = (0, _jquery2.default)('label[for="' + id + '"]');
             node.removeClass('form-it-clean-checkbox');
             node.addClass('form-it-error-checkbox');
             node.addClass('form-it-dirty');
         } else {
-            var _node2 = $('#' + id);
+            var _node2 = (0, _jquery2.default)('#' + id);
             _node2.removeClass('form-it-clean');
             _node2.addClass('form-it-error');
             _node2.addClass('form-it-dirty');
         }
-        var errorBlock = $('#error-' + id);
+        var errorBlock = (0, _jquery2.default)('#error-' + id);
         var errMsgs = errorBlock.html();
         errMsgs += '<div class=".form-it-error-item">\u2718 ' + error.errorMsg + ' [Actual Value: ' + error.actual + ']</div>';
         errorBlock.html(errMsgs);
@@ -9824,8 +9805,8 @@ function handleFormErrors(errors) {
     return errors.length > 0;
 }
 
-function buildFieldError(field) {
-    return '\n            <div class="form-it-error-block hide" id="error-' + field.key + '"></div>\n        ';
+function _buildFieldError(field) {
+    return '\n            <div class="form-it-error-block" id="error-' + field.key + '"></div>\n        ';
 }
 
 /***/ }),
@@ -10963,7 +10944,7 @@ exports = module.exports = __webpack_require__(30)();
 
 
 // module
-exports.push([module.i, "\nform.form-it-form .form-it-error {\n    background: pink;\n    border: 1px solid red;\n}\nform.form-it-form .form-it-error-block {\n    margin-top: 3px;\n    padding-left: 5px;\n    padding-right: 5px;\n    background: pink;\n    border: 1px solid red;\n    border-radius: 3px;\n    font-size: .8em;\n    color: red;\n    font-weight: bold;\n}\nform.form-it-form .form-it-clean {\n    background: lightgreen;\n    border: 1px solid green;\n}\nform.form-it-form .form-it-error-checkbox {\n    color: red;\n}\nform.form-it-form .form-it-clean-checkbox {\n    color: black;\n}\nform.form-it-form .form-it-dirty.form-it-clean-checkbox {\n    color: green;\n}\nform.form-it-form {\n    border: 3px solid lightyellow;\n    border-radius: 6px;\n    padding: 10px;\n}\n", ""]);
+exports.push([module.i, "\nform.form-it-form .form-it-error {\n    background: pink;\n    border: 1px solid red;\n}\n.form-it-error-block {\n    margin-top: 5px;\n    padding: 10px 5px 10px 10px;\n    background: pink;\n    border: 1px solid red;\n    border-radius: 3px;\n    font-size: .8em;\n    color: red;\n    font-weight: bold;\n}\n.form-it-form .form-it-clean {\n    background: lightgreen;\n    border: 1px solid green;\n}\n.form-it-form .form-it-error-checkbox {\n    color: red;\n}\n.form-it-form .form-it-clean-checkbox {\n    color: black;\n}\n.form-it-form .form-it-dirty.form-it-clean-checkbox {\n    color: green;\n}\n.form-it-form {\n    border: 3px solid lightyellow;\n    border-radius: 6px;\n    padding: 10px;\n}\ntextarea {\n    overflow-y: scroll;\n    height: 150px;\n    width: 650px;\n    resize: none;\n}\n\n", ""]);
 
 // exports
 
@@ -23651,9 +23632,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "form-it"
   }, [_c('form', {
     staticClass: "form-it-form",
+    attrs: {
+      "id": _vm.id
+    },
     on: {
       "change": function($event) {
-        _vm.handleFormChange($event, _vm.fields, _vm.model)
+        _vm.handleFormChange($event, _vm.fields)
       },
       "submit": function($event) {
         _vm.handleFormSubmit($event, _vm.fields, _vm.model)
@@ -23670,15 +23654,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }), _vm._v(" "), _vm._l((_vm.fields), function(field) {
     return _c('div', {
       staticClass: "form-group"
-    }, [_c('span', {
-      domProps: {
-        "innerHTML": _vm._s(_vm.formLabel(field))
+    }, [_c('form-it-input', {
+      attrs: {
+        "field": field,
+        "model": _vm.formModel
       }
-    }), _vm._v(" "), _c('span', {
-      domProps: {
-        "innerHTML": _vm._s(_vm.formInput(field, _vm.model))
-      }
-    })])
+    }, [_vm._v("This is transclude (aka slot)")])], 1)
   }), _vm._v(" "), _vm._l((_vm.footer), function(item) {
     return _c('div', {
       staticClass: "form-it-footer"
@@ -24035,7 +24016,7 @@ var pkgInfo = __webpack_require__(11);
 // import '!style-loader!css-loader!sass-loader!../sass/app.scss';
 Vue.component('form-it', __webpack_require__(9));
 
-var states = [{ name: 'az', value: 'AZ' }, { name: 'ca', value: 'CA' }, { name: 'ny', value: 'NY' }];
+var states = __webpack_require__(47);
 
 new Vue({
 	el: '#v-app',
@@ -24043,10 +24024,11 @@ new Vue({
 		appName: pkgInfo.appName,
 		appVersion: pkgInfo.version,
 		states: states,
+		formID: 'testForm',
 		header: [{ type: 'html', value: '<h3>Form Header Value</h3>' }, { type: 'button', label: 'Submit' }, { type: 'html', value: '<br /><br />' }],
 		footer: [{ type: 'button', label: 'Submit' }],
-		fields: [{ key: 'fname', type: 'text', label: 'First Name', required: true, validators: [{ length: 'value.length > 3', errorMsg: 'First Name must be at least 3 characters' }, { value: 'value === \'Brady\'', errorMsg: 'First Name must be Brady' }] }, { key: 'lname', type: 'text', label: 'Last Name', validators: [{ value: 'value === \'Erickson\'', errorMsg: 'Last Name must be Erickson' }] }, { key: 'dob', type: 'date', label: 'DOB' }, { key: 'state', type: 'select', label: 'State', options: states, validators: [{ value: "value === 'CA'" }] }, { key: 'gender', type: 'radio', label: 'Gender', choices: { male: 'Male', female: 'Female' }, validators: [{ value: "value !== ''" }] }, { key: 'married', type: 'checkbox', label: 'Married', validators: [{ value: 'isTruthy(value)' }] }, { key: 'bio', type: 'textarea', label: 'Biography', attrs: { rows: 5, cols: 65 }, validators: [{ length: 'value.length > 10' }] }],
-		model: [{ key: 'fname', value: 'Brady' }, { key: 'lname', value: 'Erickson' }, { key: 'dob', value: '1993-02-28' }, { key: 'bio', value: 'now is the time for all good men to come the aid of their country and fight, fight for the right to win!  Impeach Trump!' }, { key: 'state', value: 'ca' }, { key: 'gender', value: 'male' }, { key: 'married', value: true }]
+		fields: [{ key: 'fname', type: 'text', label: 'First Name', required: true, validators: [{ length: 'value.length > 3', errorMsg: 'First Name must be at least 3 characters' }, { value: 'value === \'Brady\'', errorMsg: 'First Name must be Brady' }] }, { key: 'lname', type: 'text', label: 'Last Name', validators: [{ value: 'value === \'Erickson\'', errorMsg: 'Last Name must be Erickson' }] }, { key: 'dob', type: 'date', label: 'DOB' }, { key: 'state', type: 'select', label: 'State', options: states, validators: [{ value: "value === 'CA'", errorMsg: 'State must be CA - California' }] }, { key: 'gender', type: 'radio', label: 'Gender', choices: { male: 'Male', female: 'Female' }, validators: [{ value: "value !== ''" }] }, { key: 'married', type: 'checkbox', label: 'Married', validators: [{ value: 'isTruthy(value)' }] }, { key: 'bio', type: 'textarea', label: 'Biography', attrs: { rows: 5, cols: 85 }, validators: [{ length: 'value.length > 10' }] }],
+		model: [{ key: 'fname', value: 'Brady' }, { key: 'lname', value: 'Erickson' }, { key: 'dob', value: '1993-02-28' }, { key: 'bio', value: 'now is the time for all good men to come the aid of their country and fight, fight for the right to win!  Impeach Trump!' }, { key: 'state', value: 'CA' }, { key: 'gender', value: 'male' }, { key: 'married', value: true }]
 	},
 	methods: {},
 	computed: {},
@@ -24054,6 +24036,488 @@ new Vue({
 		msg.success(' === ' + this.appName + ' Vue Ready === ');
 	}
 });
+
+/***/ }),
+/* 47 */
+/***/ (function(module, exports) {
+
+module.exports = [
+	{
+		"value": "Alabama",
+		"name": "AL"
+	},
+	{
+		"value": "Alaska",
+		"name": "AK"
+	},
+	{
+		"value": "American Samoa",
+		"name": "AS"
+	},
+	{
+		"value": "Arizona",
+		"name": "AZ"
+	},
+	{
+		"value": "Arkansas",
+		"name": "AR"
+	},
+	{
+		"value": "California",
+		"name": "CA"
+	},
+	{
+		"value": "Colorado",
+		"name": "CO"
+	},
+	{
+		"value": "Connecticut",
+		"name": "CT"
+	},
+	{
+		"value": "Delaware",
+		"name": "DE"
+	},
+	{
+		"value": "District Of Columbia",
+		"name": "DC"
+	},
+	{
+		"value": "Federated States Of Micronesia",
+		"name": "FM"
+	},
+	{
+		"value": "Florida",
+		"name": "FL"
+	},
+	{
+		"value": "Georgia",
+		"name": "GA"
+	},
+	{
+		"value": "Guam",
+		"name": "GU"
+	},
+	{
+		"value": "Hawaii",
+		"name": "HI"
+	},
+	{
+		"value": "Idaho",
+		"name": "ID"
+	},
+	{
+		"value": "Illinois",
+		"name": "IL"
+	},
+	{
+		"value": "Indiana",
+		"name": "IN"
+	},
+	{
+		"value": "Iowa",
+		"name": "IA"
+	},
+	{
+		"value": "Kansas",
+		"name": "KS"
+	},
+	{
+		"value": "Kentucky",
+		"name": "KY"
+	},
+	{
+		"value": "Louisiana",
+		"name": "LA"
+	},
+	{
+		"value": "Maine",
+		"name": "ME"
+	},
+	{
+		"value": "Marshall Islands",
+		"name": "MH"
+	},
+	{
+		"value": "Maryland",
+		"name": "MD"
+	},
+	{
+		"value": "Massachusetts",
+		"name": "MA"
+	},
+	{
+		"value": "Michigan",
+		"name": "MI"
+	},
+	{
+		"value": "Minnesota",
+		"name": "MN"
+	},
+	{
+		"value": "Mississippi",
+		"name": "MS"
+	},
+	{
+		"value": "Missouri",
+		"name": "MO"
+	},
+	{
+		"value": "Montana",
+		"name": "MT"
+	},
+	{
+		"value": "Nebraska",
+		"name": "NE"
+	},
+	{
+		"value": "Nevada",
+		"name": "NV"
+	},
+	{
+		"value": "New Hampshire",
+		"name": "NH"
+	},
+	{
+		"value": "New Jersey",
+		"name": "NJ"
+	},
+	{
+		"value": "New Mexico",
+		"name": "NM"
+	},
+	{
+		"value": "New York",
+		"name": "NY"
+	},
+	{
+		"value": "North Carolina",
+		"name": "NC"
+	},
+	{
+		"value": "North Dakota",
+		"name": "ND"
+	},
+	{
+		"value": "Northern Mariana Islands",
+		"name": "MP"
+	},
+	{
+		"value": "Ohio",
+		"name": "OH"
+	},
+	{
+		"value": "Oklahoma",
+		"name": "OK"
+	},
+	{
+		"value": "Oregon",
+		"name": "OR"
+	},
+	{
+		"value": "Palau",
+		"name": "PW"
+	},
+	{
+		"value": "Pennsylvania",
+		"name": "PA"
+	},
+	{
+		"value": "Puerto Rico",
+		"name": "PR"
+	},
+	{
+		"value": "Rhode Island",
+		"name": "RI"
+	},
+	{
+		"value": "South Carolina",
+		"name": "SC"
+	},
+	{
+		"value": "South Dakota",
+		"name": "SD"
+	},
+	{
+		"value": "Tennessee",
+		"name": "TN"
+	},
+	{
+		"value": "Texas",
+		"name": "TX"
+	},
+	{
+		"value": "Utah",
+		"name": "UT"
+	},
+	{
+		"value": "Vermont",
+		"name": "VT"
+	},
+	{
+		"value": "Virgin Islands",
+		"name": "VI"
+	},
+	{
+		"value": "Virginia",
+		"name": "VA"
+	},
+	{
+		"value": "Washington",
+		"name": "WA"
+	},
+	{
+		"value": "West Virginia",
+		"name": "WV"
+	},
+	{
+		"value": "Wisconsin",
+		"name": "WI"
+	},
+	{
+		"value": "Wyoming",
+		"name": "WY"
+	}
+];
+
+/***/ }),
+/* 48 */,
+/* 49 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _truthy = __webpack_require__(36);
+
+var _truthy2 = _interopRequireDefault(_truthy);
+
+var _cdMessenger = __webpack_require__(2);
+
+var _cdMessenger2 = _interopRequireDefault(_cdMessenger);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//
+//
+//
+//
+//
+//
+//
+
+exports.default = {
+    name: 'form-it-input',
+    props: ['field', 'model'],
+    data: function data() {
+        return {};
+    },
+    methods: {
+        formLabel: function formLabel(field) {
+            return _buildLabel(field);
+        },
+        formInput: function formInput(field, data) {
+            return _buildInput(field, data);
+        }
+    }
+
+};
+
+/* ==================================================================
+ * COMPONENT PRIVATE METHODS
+ * ================================================================== */
+
+function _addAttributes() {
+    var attrs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+    var result = '';
+    if (attrs) {
+        var keys = Object.keys(attrs);
+        var values = Object.values(attrs);
+        for (var i = 0; i < keys.length; i++) {
+            result += ' ' + keys[i] + '=' + values[i];
+        }
+    }
+    return result;
+}
+
+function _getValue(key, data) {
+    var result = data.find(function (field) {
+        return field.key === key;
+    });
+    return result ? result.value : '';
+}
+
+function _buildLabel(field) {
+    var obj = '';
+    if (field.type === 'select' || field.type === 'text' || field.type === 'date') {
+        obj += '<label for="' + field.key + '">' + field.label + '</label>';
+        if (field.type === 'select') {
+            obj += '<br />';
+        }
+    }
+    return obj;
+}
+
+function _buildInput(field, data) {
+    var value = _getValue(field.key, data);
+    var obj = '';
+    switch (field.type) {
+        case 'text':
+            obj = '\n                    <input\n                        type="' + field.type + '"\n                        id="' + field.key + '"\n                        name="' + field.key + '"\n                        class="form-control"\n                        value="' + value + '" ' + (field.readonly ? 'readonly' : '') + '\n                        ' + (field.disabled ? 'disabled' : '') + '\n                        required="' + field.required + '"\n                    />\n                ';
+            break;
+        case 'checkbox':
+            obj = '\n                    <input\n                        type="' + field.type + '"\n                        id="' + field.key + '"\n                        name="' + field.key + '"\n                        class="form-check-input"\n                        ' + (field.readonly || field.disabled ? 'disabled' : '') + '\n                        onClick="(this.checked ? this.value = true : this.value = false)"\n                        ' + ((0, _truthy2.default)(value) ? 'checked' : '') + '\n                        value="' + value + '"\n                    /> <label for="' + field.key + '">' + field.label + '</label>\n                ';
+            break;
+        case 'radio':
+            var keys = Object.keys(field.choices);
+            var values = Object.values(field.choices);
+            if (keys.length > 0) {
+                keys.forEach(function (choice, idx) {
+                    var checked = value.toLowerCase() === choice.toLowerCase() ? 'checked' : '';
+                    var disabled = field.disabled ? 'disabled' : '';
+                    obj += '\n\t\t\t\t\t\t    <input\n\t\t\t\t\t\t        type="radio"\n\t\t\t\t\t\t        id="' + field.key + '"\n\t\t\t\t\t\t        ' + disabled + '\n\t\t\t\t\t\t        name="' + field.key + '"\n                                value="' + choice.toLowerCase() + '" ' + disabled + '> ' + values[idx] + '\n\t\t\t\t\t\t';
+                });
+            }
+            break;
+        case 'textarea':
+            obj = '\n            \t    <label for="' + field.key + '">' + field.label + '</label> <br />\n            \t    <textarea id="' + field.key + '" name="' + field.key + '" ' + _addAttributes(field.attrs) + '>' + value + '</textarea>\n            \t';
+            break;
+        case 'select':
+            var options = '';
+            field.options.forEach(function (item) {
+                options += '<option ' + (item.name === value ? 'selected' : '') + ' value="' + item.name + '">' + item.value + '</option>';
+            });
+            obj = '\n                    <select id="' + field.key + '" name="' + field.key + '">' + options + '</select>\n                ';
+            break;
+        case 'date':
+            obj = '\n                    <input\n                        type="' + field.type + '"\n                        id="' + field.key + '"\n                        name="' + field.key + '"\n                        class="form-control"\n                        value="' + value + '" ' + (field.readonly ? 'readonly' : '') + '\n                        ' + (field.disabled ? 'disabled' : '') + '\n                        required="' + field.required + '"\n                    />\n                ';
+            break;
+        default:
+            _cdMessenger2.default.error('Unsupported Field Type: ' + field.type);
+            break;
+    }
+
+    obj += _buildFieldError(field);
+    return obj;
+}
+
+function _buildFieldError(field) {
+    var obj = '\n    \t    <div class="form-it-error-block hide" id="error-' + field.key + '"></div>\n    \t';
+    return obj;
+}
+
+/***/ }),
+/* 50 */,
+/* 51 */,
+/* 52 */,
+/* 53 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+/* styles */
+__webpack_require__(58)
+
+var Component = __webpack_require__(40)(
+  /* script */
+  __webpack_require__(49),
+  /* template */
+  __webpack_require__(54),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+Component.options.__file = "/Users/mikee/Documents/Projects/dev/vue/cd-vue-starter/src/js/components/FormItInput.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] FormItInput.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-152ed7d0", Component.options)
+  } else {
+    hotAPI.reload("data-v-152ed7d0", Component.options)
+  }
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 54 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "form-it-input form-group"
+  }, [_c('span', {
+    domProps: {
+      "innerHTML": _vm._s(_vm.formLabel(_vm.field))
+    }
+  }), _vm._v(" "), _c('span', {
+    domProps: {
+      "innerHTML": _vm._s(_vm.formInput(_vm.field, _vm.model))
+    }
+  })])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-152ed7d0", module.exports)
+  }
+}
+
+/***/ }),
+/* 55 */,
+/* 56 */,
+/* 57 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(30)();
+// imports
+
+
+// module
+exports.push([module.i, "\n.form-it-input {\n}\n\n\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 58 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(57);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(43)("6dab4b30", content, false);
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!./../../../node_modules/css-loader/index.js!./../../../node_modules/vue-loader/lib/style-rewriter.js?{\"id\":\"data-v-152ed7d0\",\"scoped\":false,\"hasInlineConfig\":false}!./../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./FormItInput.vue", function() {
+     var newContent = require("!!./../../../node_modules/css-loader/index.js!./../../../node_modules/vue-loader/lib/style-rewriter.js?{\"id\":\"data-v-152ed7d0\",\"scoped\":false,\"hasInlineConfig\":false}!./../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./FormItInput.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
 
 /***/ })
 /******/ ]);

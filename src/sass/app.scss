@@ -4,6 +4,7 @@
 
 // Include Mixins
 @import 'mixins/__index__';
+@import 'tree-view';
 
 // Fonts
 @include google-font('Raleway:300,400,600');

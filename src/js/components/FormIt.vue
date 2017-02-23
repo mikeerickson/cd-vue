@@ -1,12 +1,15 @@
-<template id="form-it">
+<template>
     <div class="form-it">
-        <form class="form-it-form" @change="handleFormChange($event, fields, model)" @submit="handleFormSubmit($event, fields, model)">
+        <form :id="id" class="form-it-form" @change="handleFormChange($event, fields)" @submit="handleFormSubmit($event, fields, model)">
             <div v-for="item in header" class="form-it-footer">
                 <span v-html="formObject(item)"></span>
             </div>
+
+
             <div v-for="field in fields" class="form-group">
-                <span v-html="formLabel(field)"></span>
-                <span v-html="formInput(field, model)"></span>
+                <form-it-input :field="field" :model="formModel">This is transclude (aka slot)</form-it-input>
+                <!--<span v-html="formLabel(field)"></span>-->
+                <!--<span v-html="formInput(field, model)"></span>-->
             </div>
             <div v-for="item in footer" class="form-it-footer">
                 <span v-html="formObject(item)"></span>
@@ -15,36 +18,29 @@
     </div>
 </template>
 
-<script id="form-it">
+<script>
 
-    let $        = require('jquery');
-    let msg      = require('cd-messenger');
-    let isTruthy = require('truthy');
-    let swal     = require('sweetalert2');
+    import $           from 'jquery';
+    import msg         from 'cd-messenger';
+    import isTruthy    from 'truthy';
+    import swal        from 'sweetalert2';
+    import FormItInput from './FormItInput.vue';
 
     export default {
-    	props: ['model', 'fields', 'header', 'footer'],
+      components: {
+      	FormItInput
+      },
+      name: "form-it",
+      props: ['id', 'model', 'fields', 'header', 'footer'],
       data() {
         return {
-          data: {},
+          formID:     this.id,
+          formData:   [],
           formFields: this.fields,
-          formModel: this.model
+          formModel:  this.model
         };
       },
       methods: {
-        formLabel: (field) => {
-            let obj = '';
-            if ((field.type === 'select') || (field.type === 'text') || (field.type === 'date')) {
-                obj += `<label for="${field.key}">${field.label}</label>`;
-                if (field.type === 'select') {
-                    obj += '<br />';
-                }
-            }
-            return obj;
-        },
-        formInput: (field, data) => {
-          return buildInput(field, data);
-        },
         formObject: (item) => {
             let obj = '';
             switch (item.type) {
@@ -57,29 +53,57 @@
             }
             return obj;
         },
-        formValue: (key, data) => {
-          return (getValue(key, data));
+        buildFieldError: (item) => {
+        	return _buildFieldError(item);
         },
-        formValidation: () => {},
-        handleFormChange: (evt, fields, model) => {
-			let errors = formValidation(evt, fields, model);
+        handleFormChange: function (evt, fields) {
+			this.formData = updateFormData();
+			let errors = formValidation(evt, fields);
+			if (errors.length > 0) {
+			    this.formData = this.formData.concat({errors});
+            }
 			return handleFormErrors(errors);
         },
-        handleFormSubmit: (evt, fields, model) => {
+        handleFormSubmit: function (evt, fields, model) {
             evt.preventDefault();
-            let errors = formValidation(evt, fields, model);
+
+            this.formData = updateFormData();
+            let errors    = formValidation(evt, fields, model);
             if (errors.length > 0) {
+                this.formData = this.formData.concat({errors});
                 handleFormErrors(errors);
                 errorDialog(`Form contains ${errors.length} ${errors.length > 1 ? 'errors' : 'error'}`);
                 return false;
             }
 
-            successDialog('Form Validation Passed');
+//            successDialog('Form Validation Passed');
             msg.success('Handle Form Submit');
 
-        },
+        }
       }
 	};
+
+    function updateFormData(form = null) {
+    	let formData = (form) ? form.target : document.querySelectorAll('.form-it-form')[0];
+        let data = [];
+        for (let i = 0; i < formData.length; i++) {
+            if (formData[i].id !== '') {
+                data.push(
+                	{
+                      id: formData[i].id,
+                      value: formData[i].value,
+                      required: formData[i].required
+                	}
+                );
+            }
+        }
+
+        let resultData = [];
+        resultData.push({form: {id: formData.id}});
+        resultData.push({data: data});
+
+        return resultData;
+    }
 
     function errorDialog(msg, options = {icon: true}) {
         swal({
@@ -101,103 +125,12 @@
         });
     }
 
-	function buildInput(field, data) {
-		let value = getValue(field.key, data);
-        let obj   = '';
-        switch (field.type) {
-          case 'text':
-            obj = `<input
-                type="${field.type}"
-                id="${field.key}"
-                name="${field.key}"
-                class="form-control"
-                value="${value}" ${field.readonly ? 'readonly' : ''}
-                ${field.disabled ? 'disabled' : ''}
-                required="${field.required}"
-            />`;
-            break;
-          case 'checkbox':
-            obj = `<input
-                type="${field.type}"
-                id="${field.key}"
-                name="${field.key}"
-                class="form-check-input"
-                ${(field.readonly || field.disabled) ? 'disabled' : ''}
-                onClick="(this.checked ? this.value = true : this.value = false)"
-                ${isTruthy(value) ? 'checked' : ''}
-                value="${value}"
-            /> <label for="${field.key}">${field.label}</label>`;
-            break;
-          case 'radio':
-                let keys   = Object.keys(field.choices);
-                let values = Object.values(field.choices);
-                if (keys.length > 1) {
-                    keys.forEach((choice, idx) => {
-                        let checked  = (value.toLowerCase() === choice.toLowerCase()) ? 'checked' : '';
-                        let disabled = field.disabled ? 'disabled' : '';
-                        obj +=
-                          `<input ${checked}
-                              type="radio"
-                              id="${field.key}"
-                              ${checked}
-                              ${disabled}
-                              name="${field.key}"
-                              value="${choice.toLowerCase()}" ${disabled}> ${values[idx]} &nbsp;
-                          `;
-                    });
-                }
-                else {
-                    msg.error(`[${field.key}] Configuration Error (Invalid Choices)`);
-				}
-                break;
-          case 'textarea':
-            obj = `<label for="${field.key}">${field.label}</label> <br />
-                 <textarea id="${field.key}" name="${field.key}" ${addAttributes(field.attrs)}>${value}</textarea>`;
-            break;
-          case 'select':
-            let options = '';
-            field.options.forEach((item) => {
-                options += `<option ${item.name === value ? 'selected' : ''} name=${item.name}>${item.value}</option>`;
-            });
-            obj = `<select id="${field.key}" name="${field.key}">${options}</select>`;
-            break;
-          default:
-            obj = `<input
-                type="${field.type}"
-                id="${field.key}"
-                name="${field.key}"
-                class="form-control"
-                value="${value}" ${field.readonly ? 'readonly' : ''}
-                ${field.disabled ? 'disabled' : ''}
-                required="${field.required}"
-            />`;
-            break;
-        }
-        obj += buildFieldError(field);
-        return obj;
-    }
-
-    function getValue(key, data) {
-        let result = data.find((field) => { return field.key === key; });
-        return result ? result.value : '';
-    }
-
-    function addAttributes(attrs) {
-		let result = '';
-		let keys   = Object.keys(attrs);
-		let values = Object.values(attrs);
-		for (let i = 0; i < keys.length; i++) {
-			result += ' ' + keys[i] + '=' + values[i];
-        }
-        return result;
-    }
-
-    function formValidation(evt, fields, model) {
+    function formValidation(evt, fields) {
 		let event = evt;
 		let form = evt.currentTarget;
 		let errors = [];
 
-		fields.forEach((input, idx, fields, model) => {
+		fields.forEach((input, idx, fields) => {
 			let value = '';
 			for (let i = 0; i < form.length; i++) {
 				if (form[i].id === input.key) {
@@ -299,23 +232,23 @@
 		return errors.length > 0;
     }
 
-    function buildFieldError(field) {
+    function _buildFieldError(field) {
 		return (`
-            <div class="form-it-error-block hide" id="error-${field.key}"></div>
+            <div class="form-it-error-block" id="error-${field.key}"></div>
         `);
     }
 
 </script>
 
-<style id="form-it">
+<style >
     form.form-it-form .form-it-error {
         background: pink;
         border: 1px solid red;
     }
-    form.form-it-form .form-it-error-block {
-        margin-top: 3px;
-        padding-left: 5px;
-        padding-right: 5px;
+
+    .form-it-error-block {
+        margin-top: 5px;
+        padding: 10px 5px 10px 10px;
         background: pink;
         border: 1px solid red;
         border-radius: 3px;
@@ -323,22 +256,30 @@
         color: red;
         font-weight: bold;
     }
-    form.form-it-form .form-it-clean {
+
+    .form-it-form .form-it-clean {
         background: lightgreen;
         border: 1px solid green;
     }
-    form.form-it-form .form-it-error-checkbox {
+    .form-it-form .form-it-error-checkbox {
         color: red;
     }
-    form.form-it-form .form-it-clean-checkbox {
+    .form-it-form .form-it-clean-checkbox {
         color: black;
     }
-    form.form-it-form .form-it-dirty.form-it-clean-checkbox {
+    .form-it-form .form-it-dirty.form-it-clean-checkbox {
         color: green;
     }
-    form.form-it-form {
+    .form-it-form {
         border: 3px solid lightyellow;
         border-radius: 6px;
         padding: 10px;
     }
+    textarea {
+        overflow-y: scroll;
+        height: 150px;
+        width: 650px;
+        resize: none;
+    }
+
 </style>

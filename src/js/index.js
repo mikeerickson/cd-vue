@@ -6,11 +6,7 @@ const pkgInfo = require('../../package.json');
 // import '!style-loader!css-loader!sass-loader!../sass/app.scss';
 Vue.component('form-it', require('./components/FormIt.vue'));
 
-let states = [
-		{name: 'az', value: 'AZ'},
-		{name: 'ca', value: 'CA'},
-		{name: 'ny', value: 'NY'},
-	];
+const states = require('../../data/us-states.json');
 
 new Vue({
 	el: '#v-app',
@@ -18,6 +14,7 @@ new Vue({
 		appName:    pkgInfo.appName,
     appVersion: pkgInfo.version,
     states:     states,
+    formID: 'testForm',
     header: [
 			{type: 'html', value: '<h3>Form Header Value</h3>'},
 			{type: 'button', label: 'Submit'},
@@ -36,7 +33,7 @@ new Vue({
 			]},
 			{key: 'dob', type: 'date', label: 'DOB'},
 			{key: 'state', type: 'select', label: 'State', options: states, validators: [
-				{value: "value === 'CA'"}
+				{value: "value === 'CA'", errorMsg: 'State must be CA - California'}
 			]},
 			{key: 'gender', type: 'radio', label: 'Gender', choices: {male: 'Male', female: 'Female'}, validators: [
 				{value: "value !== ''"}
@@ -44,7 +41,7 @@ new Vue({
 			{key: 'married', type: 'checkbox', label: 'Married', validators: [
 				{value: 'isTruthy(value)'}
 			]},
-			{key: 'bio', type: 'textarea', label: 'Biography', attrs: {rows: 5, cols: 65}, validators: [
+			{key: 'bio', type: 'textarea', label: 'Biography', attrs: {rows: 5, cols: 85}, validators: [
 				{length: 'value.length > 10'}
 			]}
 		],
@@ -53,7 +50,7 @@ new Vue({
       {key: 'lname', value: 'Erickson'},
       {key: 'dob', value: '1993-02-28'},
       {key: 'bio', value: 'now is the time for all good men to come the aid of their country and fight, fight for the right to win!  Impeach Trump!'},
-      {key: 'state', value: 'ca'},
+      {key: 'state', value: 'CA'},
       {key: 'gender', value: 'male'},
       {key: 'married', value: true}
     ]
