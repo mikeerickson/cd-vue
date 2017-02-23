@@ -41,8 +41,8 @@ new Vue({
 			{key: 'married', type: 'checkbox', label: 'Married', validators: [
 				{value: 'isTruthy(value)'}
 			]},
-			{key: 'bio', type: 'textarea', label: 'Biography', attrs: {rows: 5, cols: 85}, validators: [
-				{length: 'value.length > 10'}
+			{key: 'bio', type: 'textarea', label: 'Biography', attrs: {rows: 5, cols: 50}, validators: [
+				{length: 'value.length > 10', errorMsg: 'Biography must be at least 10 characters'}
 			]}
 		],
     model: [

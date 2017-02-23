@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 46);
+/******/ 	return __webpack_require__(__webpack_require__.s = 52);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -291,10 +291,10 @@ module['exports'] = colors;
 
 colors.themes = {};
 
-var ansiStyles = colors.styles = __webpack_require__(26);
+var ansiStyles = colors.styles = __webpack_require__(32);
 var defineProps = Object.defineProperties;
 
-colors.supportsColor = __webpack_require__(27);
+colors.supportsColor = __webpack_require__(33);
 
 if (typeof colors.enabled === "undefined") {
   colors.enabled = colors.supportsColor;
@@ -413,15 +413,15 @@ var sequencer = function sequencer (map, str) {
 };
 
 // custom formatter methods
-colors.trap = __webpack_require__(20);
-colors.zalgo = __webpack_require__(21);
+colors.trap = __webpack_require__(26);
+colors.zalgo = __webpack_require__(27);
 
 // maps
 colors.maps = {};
-colors.maps.america = __webpack_require__(22);
-colors.maps.zebra = __webpack_require__(25);
-colors.maps.rainbow = __webpack_require__(23);
-colors.maps.random = __webpack_require__(24)
+colors.maps.america = __webpack_require__(28);
+colors.maps.zebra = __webpack_require__(31);
+colors.maps.rainbow = __webpack_require__(29);
+colors.maps.random = __webpack_require__(30)
 
 for (var map in colors.maps) {
   (function(map){
@@ -440,11 +440,11 @@ defineProps(colors, init());
 /* WEBPACK VAR INJECTION */(function(process) {/*global require, process*/
 
 if (process.browser) {
-  let Browser = __webpack_require__(13);
+  let Browser = __webpack_require__(19);
   module.exports = new Browser(__webpack_require__(5));
 }
 else {
-  module.exports = __webpack_require__(14);
+  module.exports = __webpack_require__(20);
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
@@ -531,7 +531,7 @@ Object.defineProperty(module, 'exports', {
 	get: assembleStyles
 });
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(45)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(51)(module)))
 
 /***/ }),
 /* 5 */
@@ -686,11 +686,11 @@ module.exports = {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
-var escapeStringRegexp = __webpack_require__(7);
+var escapeStringRegexp = __webpack_require__(8);
 var ansiStyles = __webpack_require__(4);
-var stripAnsi = __webpack_require__(34);
-var hasAnsi = __webpack_require__(31);
-var supportsColor = __webpack_require__(15);
+var stripAnsi = __webpack_require__(40);
+var hasAnsi = __webpack_require__(37);
+var supportsColor = __webpack_require__(21);
 var defineProps = Object.defineProperties;
 var isSimpleWindowsTerm = process.platform === 'win32' && !/^xterm/i.test(process.env.TERM);
 
@@ -806,6 +806,62 @@ module.exports.supportsColor = supportsColor;
 
 /***/ }),
 /* 7 */
+/***/ (function(module, exports) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function() {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		var result = [];
+		for(var i = 0; i < this.length; i++) {
+			var item = this[i];
+			if(item[2]) {
+				result.push("@media " + item[2] + "{" + item[1] + "}");
+			} else {
+				result.push(item[1]);
+			}
+		}
+		return result.join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function(modules, mediaQuery) {
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for(var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if(typeof id === "number")
+				alreadyImportedModules[id] = true;
+		}
+		for(i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if(mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -823,7 +879,342 @@ module.exports = function (str) {
 
 
 /***/ }),
-/* 8 */
+/* 9 */
+/***/ (function(module, exports) {
+
+/**
+ * @fileoverview 
+ * converts input paramater to string, then lowercase, 
+ *      then tests whether the input is in the list of
+ *      truthy values
+ */
+
+/**
+ * truthy
+ @param {testValue} the value to test
+ @return {truthy} boolean value
+ */
+
+var truthy = function(testValue){
+  var truthyValue;
+  var TRUTHY_VALUES;
+  var valueIsTruthy;
+  
+  valueIsTruthy = false;
+  TRUTHY_VALUES = [
+    'yes',
+    'true',
+    '1',
+    'ok',
+    'correct'
+  ]
+
+  if(testValue){
+
+    truthyValue = testValue.toString().toLowerCase();
+
+    if (TRUTHY_VALUES.indexOf(truthyValue) > -1){
+      valueIsTruthy = true;
+    }
+    
+  }
+
+  return(valueIsTruthy);
+}
+
+module.exports = truthy;
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+module.exports = function normalizeComponent (
+  rawScriptExports,
+  compiledTemplate,
+  scopeId,
+  cssModules
+) {
+  var esModule
+  var scriptExports = rawScriptExports = rawScriptExports || {}
+
+  // ES6 modules interop
+  var type = typeof rawScriptExports.default
+  if (type === 'object' || type === 'function') {
+    esModule = rawScriptExports
+    scriptExports = rawScriptExports.default
+  }
+
+  // Vue.extend constructor export interop
+  var options = typeof scriptExports === 'function'
+    ? scriptExports.options
+    : scriptExports
+
+  // render functions
+  if (compiledTemplate) {
+    options.render = compiledTemplate.render
+    options.staticRenderFns = compiledTemplate.staticRenderFns
+  }
+
+  // scopedId
+  if (scopeId) {
+    options._scopeId = scopeId
+  }
+
+  // inject cssModules
+  if (cssModules) {
+    var computed = options.computed || (options.computed = {})
+    Object.keys(cssModules).forEach(function (key) {
+      var module = cssModules[key]
+      computed[key] = function () { return module }
+    })
+  }
+
+  return {
+    esModule: esModule,
+    exports: scriptExports,
+    options: options
+  }
+}
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*
+  MIT License http://www.opensource.org/licenses/mit-license.php
+  Author Tobias Koppers @sokra
+  Modified by Evan You @yyx990803
+*/
+
+var hasDocument = typeof document !== 'undefined'
+
+if (typeof DEBUG !== 'undefined' && DEBUG) {
+  if (!hasDocument) {
+    throw new Error(
+    'vue-style-loader cannot be used in a non-browser environment. ' +
+    "Use { target: 'node' } in your Webpack config to indicate a server-rendering environment."
+  ) }
+}
+
+var listToStyles = __webpack_require__(50)
+
+/*
+type StyleObject = {
+  id: number;
+  parts: Array<StyleObjectPart>
+}
+
+type StyleObjectPart = {
+  css: string;
+  media: string;
+  sourceMap: ?string
+}
+*/
+
+var stylesInDom = {/*
+  [id: number]: {
+    id: number,
+    refs: number,
+    parts: Array<(obj?: StyleObjectPart) => void>
+  }
+*/}
+
+var head = hasDocument && (document.head || document.getElementsByTagName('head')[0])
+var singletonElement = null
+var singletonCounter = 0
+var isProduction = false
+var noop = function () {}
+
+// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+// tags it will allow on a page
+var isOldIE = typeof navigator !== 'undefined' && /msie [6-9]\b/.test(navigator.userAgent.toLowerCase())
+
+module.exports = function (parentId, list, _isProduction) {
+  isProduction = _isProduction
+
+  var styles = listToStyles(parentId, list)
+  addStylesToDom(styles)
+
+  return function update (newList) {
+    var mayRemove = []
+    for (var i = 0; i < styles.length; i++) {
+      var item = styles[i]
+      var domStyle = stylesInDom[item.id]
+      domStyle.refs--
+      mayRemove.push(domStyle)
+    }
+    if (newList) {
+      styles = listToStyles(parentId, newList)
+      addStylesToDom(styles)
+    } else {
+      styles = []
+    }
+    for (var i = 0; i < mayRemove.length; i++) {
+      var domStyle = mayRemove[i]
+      if (domStyle.refs === 0) {
+        for (var j = 0; j < domStyle.parts.length; j++) {
+          domStyle.parts[j]()
+        }
+        delete stylesInDom[domStyle.id]
+      }
+    }
+  }
+}
+
+function addStylesToDom (styles /* Array<StyleObject> */) {
+  for (var i = 0; i < styles.length; i++) {
+    var item = styles[i]
+    var domStyle = stylesInDom[item.id]
+    if (domStyle) {
+      domStyle.refs++
+      for (var j = 0; j < domStyle.parts.length; j++) {
+        domStyle.parts[j](item.parts[j])
+      }
+      for (; j < item.parts.length; j++) {
+        domStyle.parts.push(addStyle(item.parts[j]))
+      }
+      if (domStyle.parts.length > item.parts.length) {
+        domStyle.parts.length = item.parts.length
+      }
+    } else {
+      var parts = []
+      for (var j = 0; j < item.parts.length; j++) {
+        parts.push(addStyle(item.parts[j]))
+      }
+      stylesInDom[item.id] = { id: item.id, refs: 1, parts: parts }
+    }
+  }
+}
+
+function listToStyles (parentId, list) {
+  var styles = []
+  var newStyles = {}
+  for (var i = 0; i < list.length; i++) {
+    var item = list[i]
+    var id = item[0]
+    var css = item[1]
+    var media = item[2]
+    var sourceMap = item[3]
+    var part = { css: css, media: media, sourceMap: sourceMap }
+    if (!newStyles[id]) {
+      part.id = parentId + ':0'
+      styles.push(newStyles[id] = { id: id, parts: [part] })
+    } else {
+      part.id = parentId + ':' + newStyles[id].parts.length
+      newStyles[id].parts.push(part)
+    }
+  }
+  return styles
+}
+
+function createStyleElement () {
+  var styleElement = document.createElement('style')
+  styleElement.type = 'text/css'
+  head.appendChild(styleElement)
+  return styleElement
+}
+
+function addStyle (obj /* StyleObjectPart */) {
+  var update, remove
+  var styleElement = document.querySelector('style[data-vue-ssr-id~="' + obj.id + '"]')
+  var hasSSR = styleElement != null
+
+  // if in production mode and style is already provided by SSR,
+  // simply do nothing.
+  if (hasSSR && isProduction) {
+    return noop
+  }
+
+  if (isOldIE) {
+    // use singleton mode for IE9.
+    var styleIndex = singletonCounter++
+    styleElement = singletonElement || (singletonElement = createStyleElement())
+    update = applyToSingletonTag.bind(null, styleElement, styleIndex, false)
+    remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true)
+  } else {
+    // use multi-style-tag mode in all other cases
+    styleElement = styleElement || createStyleElement()
+    update = applyToTag.bind(null, styleElement)
+    remove = function () {
+      styleElement.parentNode.removeChild(styleElement)
+    }
+  }
+
+  if (!hasSSR) {
+    update(obj)
+  }
+
+  return function updateStyle (newObj /* StyleObjectPart */) {
+    if (newObj) {
+      if (newObj.css === obj.css &&
+          newObj.media === obj.media &&
+          newObj.sourceMap === obj.sourceMap) {
+        return
+      }
+      update(obj = newObj)
+    } else {
+      remove()
+    }
+  }
+}
+
+var replaceText = (function () {
+  var textStore = []
+
+  return function (index, replacement) {
+    textStore[index] = replacement
+    return textStore.filter(Boolean).join('\n')
+  }
+})()
+
+function applyToSingletonTag (styleElement, index, remove, obj) {
+  var css = remove ? '' : obj.css
+
+  if (styleElement.styleSheet) {
+    styleElement.styleSheet.cssText = replaceText(index, css)
+  } else {
+    var cssNode = document.createTextNode(css)
+    var childNodes = styleElement.childNodes
+    if (childNodes[index]) styleElement.removeChild(childNodes[index])
+    if (childNodes.length) {
+      styleElement.insertBefore(cssNode, childNodes[index])
+    } else {
+      styleElement.appendChild(cssNode)
+    }
+  }
+}
+
+function applyToTag (styleElement, obj) {
+  var css = obj.css
+  var media = obj.media
+  var sourceMap = obj.sourceMap
+
+  if (media) {
+    styleElement.setAttribute('media', media)
+  }
+
+  if (sourceMap) {
+    // https://developer.chrome.com/devtools/docs/javascript-debugging
+    // this makes source maps inside style tags work properly in Chrome
+    css += '\n/*# sourceURL=' + sourceMap.sources[0] + ' */'
+    // http://stackoverflow.com/a/26603875
+    css += '\n/*# sourceMappingURL=data:application/json;base64,' + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + ' */'
+  }
+
+  if (styleElement.styleSheet) {
+    styleElement.styleSheet.cssText = css
+  } else {
+    while (styleElement.firstChild) {
+      styleElement.removeChild(styleElement.firstChild)
+    }
+    styleElement.appendChild(document.createTextNode(css))
+  }
+}
+
+
+/***/ }),
+/* 12 */
 /***/ (function(module, exports) {
 
 var g;
@@ -850,18 +1241,261 @@ module.exports = g;
 
 
 /***/ }),
-/* 9 */
+/* 13 */
+/***/ (function(module, exports) {
+
+module.exports = [
+	{
+		"value": "Alabama",
+		"name": "AL"
+	},
+	{
+		"value": "Alaska",
+		"name": "AK"
+	},
+	{
+		"value": "American Samoa",
+		"name": "AS"
+	},
+	{
+		"value": "Arizona",
+		"name": "AZ"
+	},
+	{
+		"value": "Arkansas",
+		"name": "AR"
+	},
+	{
+		"value": "California",
+		"name": "CA"
+	},
+	{
+		"value": "Colorado",
+		"name": "CO"
+	},
+	{
+		"value": "Connecticut",
+		"name": "CT"
+	},
+	{
+		"value": "Delaware",
+		"name": "DE"
+	},
+	{
+		"value": "District Of Columbia",
+		"name": "DC"
+	},
+	{
+		"value": "Federated States Of Micronesia",
+		"name": "FM"
+	},
+	{
+		"value": "Florida",
+		"name": "FL"
+	},
+	{
+		"value": "Georgia",
+		"name": "GA"
+	},
+	{
+		"value": "Guam",
+		"name": "GU"
+	},
+	{
+		"value": "Hawaii",
+		"name": "HI"
+	},
+	{
+		"value": "Idaho",
+		"name": "ID"
+	},
+	{
+		"value": "Illinois",
+		"name": "IL"
+	},
+	{
+		"value": "Indiana",
+		"name": "IN"
+	},
+	{
+		"value": "Iowa",
+		"name": "IA"
+	},
+	{
+		"value": "Kansas",
+		"name": "KS"
+	},
+	{
+		"value": "Kentucky",
+		"name": "KY"
+	},
+	{
+		"value": "Louisiana",
+		"name": "LA"
+	},
+	{
+		"value": "Maine",
+		"name": "ME"
+	},
+	{
+		"value": "Marshall Islands",
+		"name": "MH"
+	},
+	{
+		"value": "Maryland",
+		"name": "MD"
+	},
+	{
+		"value": "Massachusetts",
+		"name": "MA"
+	},
+	{
+		"value": "Michigan",
+		"name": "MI"
+	},
+	{
+		"value": "Minnesota",
+		"name": "MN"
+	},
+	{
+		"value": "Mississippi",
+		"name": "MS"
+	},
+	{
+		"value": "Missouri",
+		"name": "MO"
+	},
+	{
+		"value": "Montana",
+		"name": "MT"
+	},
+	{
+		"value": "Nebraska",
+		"name": "NE"
+	},
+	{
+		"value": "Nevada",
+		"name": "NV"
+	},
+	{
+		"value": "New Hampshire",
+		"name": "NH"
+	},
+	{
+		"value": "New Jersey",
+		"name": "NJ"
+	},
+	{
+		"value": "New Mexico",
+		"name": "NM"
+	},
+	{
+		"value": "New York",
+		"name": "NY"
+	},
+	{
+		"value": "North Carolina",
+		"name": "NC"
+	},
+	{
+		"value": "North Dakota",
+		"name": "ND"
+	},
+	{
+		"value": "Northern Mariana Islands",
+		"name": "MP"
+	},
+	{
+		"value": "Ohio",
+		"name": "OH"
+	},
+	{
+		"value": "Oklahoma",
+		"name": "OK"
+	},
+	{
+		"value": "Oregon",
+		"name": "OR"
+	},
+	{
+		"value": "Palau",
+		"name": "PW"
+	},
+	{
+		"value": "Pennsylvania",
+		"name": "PA"
+	},
+	{
+		"value": "Puerto Rico",
+		"name": "PR"
+	},
+	{
+		"value": "Rhode Island",
+		"name": "RI"
+	},
+	{
+		"value": "South Carolina",
+		"name": "SC"
+	},
+	{
+		"value": "South Dakota",
+		"name": "SD"
+	},
+	{
+		"value": "Tennessee",
+		"name": "TN"
+	},
+	{
+		"value": "Texas",
+		"name": "TX"
+	},
+	{
+		"value": "Utah",
+		"name": "UT"
+	},
+	{
+		"value": "Vermont",
+		"name": "VT"
+	},
+	{
+		"value": "Virgin Islands",
+		"name": "VI"
+	},
+	{
+		"value": "Virginia",
+		"name": "VA"
+	},
+	{
+		"value": "Washington",
+		"name": "WA"
+	},
+	{
+		"value": "West Virginia",
+		"name": "WV"
+	},
+	{
+		"value": "Wisconsin",
+		"name": "WI"
+	},
+	{
+		"value": "Wyoming",
+		"name": "WY"
+	}
+];
+
+/***/ }),
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
 /* styles */
-__webpack_require__(42)
+__webpack_require__(54)
 
-var Component = __webpack_require__(40)(
+var Component = __webpack_require__(10)(
   /* script */
-  __webpack_require__(12),
+  __webpack_require__(17),
   /* template */
-  __webpack_require__(41),
+  __webpack_require__(46),
   /* scopeId */
   null,
   /* cssModules */
@@ -888,7 +1522,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 10 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9461,16 +10095,16 @@ Vue$3.compile = compileToFunctions;
 
 module.exports = Vue$3;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0), __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0), __webpack_require__(12)))
 
 /***/ }),
-/* 11 */
+/* 16 */
 /***/ (function(module, exports) {
 
 module.exports = {
 	"name": "cd-vue-starter",
 	"appName": "CodeDungeon VueJS Starter",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "CodeDungeon VueJS Starter",
 	"main": "index.js",
 	"scripts": {
@@ -9549,7 +10183,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 12 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9559,7 +10193,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _jquery = __webpack_require__(32);
+var _jquery = __webpack_require__(38);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
@@ -9567,15 +10201,15 @@ var _cdMessenger = __webpack_require__(2);
 
 var _cdMessenger2 = _interopRequireDefault(_cdMessenger);
 
-var _truthy = __webpack_require__(36);
+var _truthy = __webpack_require__(9);
 
 var _truthy2 = _interopRequireDefault(_truthy);
 
-var _sweetalert = __webpack_require__(35);
+var _sweetalert = __webpack_require__(41);
 
 var _sweetalert2 = _interopRequireDefault(_sweetalert);
 
-var _FormItInput = __webpack_require__(53);
+var _FormItInput = __webpack_require__(45);
 
 var _FormItInput2 = _interopRequireDefault(_FormItInput);
 
@@ -9608,9 +10242,6 @@ exports.default = {
                     break;
             }
             return obj;
-        },
-        buildFieldError: function buildFieldError(item) {
-            return _buildFieldError(item);
         },
         handleFormChange: function handleFormChange(evt, fields) {
             this.formData = updateFormData();
@@ -9742,14 +10373,14 @@ function formValidation(evt, fields) {
                     var node = (0, _jquery2.default)('#' + fields[idx].key);
                     if (node.type === 'checkbox') {
                         node = (0, _jquery2.default)('label[for="' + fields[idx].key + '"]');
-                        if (node.hasClass('form-it-dirty')) {
-                            node.addClass('form-it-clean-checkbox');
-                            node.removeClass('form-it-error-checkbox');
+                        if (node.hasClass('form-it-input-dirty')) {
+                            node.addClass('form-it-input-clean-checkbox');
+                            node.removeClass('form-it-input-error-checkbox');
                         }
                     } else {
-                        if (node.hasClass('form-it-dirty') > 0) {
-                            node.addClass('form-it-clean');
-                            node.removeClass('form-it-error');
+                        if (node.hasClass('form-it-input-dirty') > 0) {
+                            node.addClass('form-it-input-clean');
+                            node.removeClass('form-it-input-error');
                         }
                     }
                 } else {
@@ -9758,14 +10389,14 @@ function formValidation(evt, fields) {
                     var _node = (0, _jquery2.default)('#' + fields[idx].key);
                     if (fields[idx].type === 'checkbox') {
                         _node = (0, _jquery2.default)('label[for="' + fields[idx].key + '"]');
-                        _node.removeClass('form-it-error-checkbox');
-                        if (_node.hasClass('form-it-dirty')) {
-                            _node.addClass('form-it-clean-checkbox');
+                        _node.removeClass('form-it-input-error-checkbox');
+                        if (_node.hasClass('form-it-input-dirty')) {
+                            _node.addClass('form-it-input-clean-checkbox');
                         }
                     } else {
-                        _node.removeClass('form-it-error');
-                        if (_node.hasClass('form-it-dirty')) {
-                            _node.addClass('form-it-clean');
+                        _node.removeClass('form-it-input-error');
+                        if (_node.hasClass('form-it-input-dirty')) {
+                            _node.addClass('form-it-input-clean');
                         }
                     }
                 }
@@ -9786,18 +10417,18 @@ function handleFormErrors(errors) {
         var id = error.key;
         if (error.type === 'checkbox') {
             var node = (0, _jquery2.default)('label[for="' + id + '"]');
-            node.removeClass('form-it-clean-checkbox');
-            node.addClass('form-it-error-checkbox');
-            node.addClass('form-it-dirty');
+            node.removeClass('form-it-input-clean-checkbox');
+            node.addClass('form-it-input-error-checkbox');
+            node.addClass('form-it-input-dirty');
         } else {
             var _node2 = (0, _jquery2.default)('#' + id);
-            _node2.removeClass('form-it-clean');
-            _node2.addClass('form-it-error');
-            _node2.addClass('form-it-dirty');
+            _node2.removeClass('form-it-input-clean');
+            _node2.addClass('form-it-input-error');
+            _node2.addClass('form-it-input-dirty');
         }
         var errorBlock = (0, _jquery2.default)('#error-' + id);
         var errMsgs = errorBlock.html();
-        errMsgs += '<div class=".form-it-error-item">\u2718 ' + error.errorMsg + ' [Actual Value: ' + error.actual + ']</div>';
+        errMsgs += '<div>\u2718 ' + error.errorMsg + ' [Actual Value: ' + error.actual + ']</div>';
         errorBlock.html(errMsgs);
         errorBlock.removeClass('hide');
     });
@@ -9805,15 +10436,141 @@ function handleFormErrors(errors) {
     return errors.length > 0;
 }
 
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _truthy = __webpack_require__(9);
+
+var _truthy2 = _interopRequireDefault(_truthy);
+
+var _cdMessenger = __webpack_require__(2);
+
+var _cdMessenger2 = _interopRequireDefault(_cdMessenger);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//
+//
+//
+//
+//
+//
+//
+
+exports.default = {
+    name: 'form-it-input',
+    props: ['field', 'model'],
+    data: function data() {
+        return {};
+    },
+    methods: {
+        formLabel: function formLabel(field) {
+            return _buildLabel(field);
+        },
+        formInput: function formInput(field, data) {
+            return _buildInput(field, data);
+        }
+    }
+
+};
+
+/* ==================================================================
+ * COMPONENT PRIVATE METHODS
+ * ================================================================== */
+
+function _addAttributes() {
+    var attrs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+    var result = '';
+    if (attrs) {
+        var keys = Object.keys(attrs);
+        var values = Object.values(attrs);
+        for (var i = 0; i < keys.length; i++) {
+            result += ' ' + keys[i] + '=' + values[i];
+        }
+    }
+    return result;
+}
+
+function _getValue(key, data) {
+    var result = data.find(function (field) {
+        return field.key === key;
+    });
+    return result ? result.value : '';
+}
+
+function _buildLabel(field) {
+    var obj = '';
+    if (field.type === 'select' || field.type === 'text' || field.type === 'date') {
+        obj += '<label for="' + field.key + '">' + field.label + '</label>';
+        if (field.type === 'select') {
+            obj += '<br />';
+        }
+    }
+    return obj;
+}
+
+function _buildInput(field, data) {
+    var value = _getValue(field.key, data);
+    var obj = '';
+    switch (field.type) {
+        case 'text':
+            obj = '\n                    <input\n                        type="' + field.type + '"\n                        id="' + field.key + '"\n                        name="' + field.key + '"\n                        class="form-control"\n                        value="' + value + '" ' + (field.readonly ? 'readonly' : '') + '\n                        ' + (field.disabled ? 'disabled' : '') + '\n                        required="' + field.required + '"\n                    />\n                ';
+            break;
+        case 'checkbox':
+            obj = '\n                    <input\n                        type="' + field.type + '"\n                        id="' + field.key + '"\n                        name="' + field.key + '"\n                        class="form-check-input"\n                        ' + (field.readonly || field.disabled ? 'disabled' : '') + '\n                        onClick="(this.checked ? this.value = true : this.value = false)"\n                        ' + ((0, _truthy2.default)(value) ? 'checked' : '') + '\n                        value="' + value + '"\n                    /> <label for="' + field.key + '">' + field.label + '</label>\n                ';
+            break;
+        case 'radio':
+            var keys = Object.keys(field.choices);
+            var values = Object.values(field.choices);
+            if (keys.length > 0) {
+                keys.forEach(function (choice, idx) {
+                    var checked = value.toLowerCase() === choice.toLowerCase() ? 'checked' : '';
+                    var disabled = field.disabled ? 'disabled' : '';
+                    obj += '\n\t\t\t\t\t\t    <input\n\t\t\t\t\t\t        type="radio"\n\t\t\t\t\t\t        id="' + field.key + '"\n\t\t\t\t\t\t        ' + disabled + '\n\t\t\t\t\t\t        name="' + field.key + '"\n                                value="' + choice.toLowerCase() + '" ' + disabled + '> ' + values[idx] + '\n\t\t\t\t\t\t';
+                });
+            }
+            break;
+        case 'textarea':
+            obj = '\n            \t    <label for="' + field.key + '">' + field.label + '</label> <br />\n            \t    <textarea id="' + field.key + '" name="' + field.key + '" ' + _addAttributes(field.attrs) + '>' + value + '</textarea>\n            \t';
+            break;
+        case 'select':
+            var options = '';
+            field.options.forEach(function (item) {
+                options += '<option ' + (item.name === value ? 'selected' : '') + ' value="' + item.name + '">' + item.value + '</option>';
+            });
+            obj = '\n                    <select id="' + field.key + '" name="' + field.key + '">' + options + '</select>\n                ';
+            break;
+        case 'date':
+            obj = '\n                    <input\n                        type="' + field.type + '"\n                        id="' + field.key + '"\n                        name="' + field.key + '"\n                        class="form-control"\n                        value="' + value + '" ' + (field.readonly ? 'readonly' : '') + '\n                        ' + (field.disabled ? 'disabled' : '') + '\n                        required="' + field.required + '"\n                    />\n                ';
+            break;
+        default:
+            _cdMessenger2.default.error('Unsupported Field Type: ' + field.type);
+            break;
+    }
+
+    obj += _buildFieldError(field);
+    return obj;
+}
+
 function _buildFieldError(field) {
-    return '\n            <div class="form-it-error-block" id="error-' + field.key + '"></div>\n        ';
+    var obj = '\n    \t    <div class="form-it-error-block hide" id="error-' + field.key + '"></div>\n    \t';
+    return obj;
 }
 
 /***/ }),
-/* 13 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
-let logger = __webpack_require__(33);
+let logger = __webpack_require__(39);
 
 function showColorMessage(msg, bgColor = 'white', ...params) {
   let mgStyle = `background: ${bgColor}; color: white; display: block;`;
@@ -9876,13 +10633,13 @@ module.exports = MessengerBrowser;
 
 
 /***/ }),
-/* 14 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
 const chalk   = __webpack_require__(6);
-const cl      = __webpack_require__(16);
-const Table   = __webpack_require__(17);
+const cl      = __webpack_require__(22);
+const Table   = __webpack_require__(23);
 const pkgInfo = __webpack_require__(5);
 
 const CLI_ICON_FAIL = '✘';
@@ -9965,7 +10722,7 @@ module.exports = messenger;
 
 
 /***/ }),
-/* 15 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10023,18 +10780,18 @@ module.exports = (function () {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 16 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {
 // TODO: expose more of `chalk` and condense this file more
 // directly copy/pasted and manipulated from `chalk`'s index.js file
 
-var escapeStringRegexp = __webpack_require__(7);
+var escapeStringRegexp = __webpack_require__(8);
 var defineProps = Object.defineProperties;
 var isSimpleWindowsTerm = process.platform === 'win32' && !/^xterm/i.test(process.env.TERM);
 var ansiStyles = __webpack_require__(4);
-var util = __webpack_require__(39);
+var util = __webpack_require__(44);
 var chalk = __webpack_require__(6);
 var block = "\u2588";
 
@@ -10146,7 +10903,7 @@ module.exports = new Chalkline();
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 17 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -10154,8 +10911,8 @@ module.exports = new Chalkline();
  * Module dependencies.
  */
 
-var colors = __webpack_require__(28)
-  , utils = __webpack_require__(18)
+var colors = __webpack_require__(34)
+  , utils = __webpack_require__(24)
   , repeat = utils.repeat
   , truncate = utils.truncate
   , pad = utils.pad;
@@ -10450,7 +11207,7 @@ module.exports.version = '0.0.1';
 
 
 /***/ }),
-/* 18 */
+/* 24 */
 /***/ (function(module, exports) {
 
 
@@ -10540,7 +11297,7 @@ exports.strlen = function(str){
 
 
 /***/ }),
-/* 19 */
+/* 25 */
 /***/ (function(module, exports) {
 
 function webpackEmptyContext(req) {
@@ -10549,11 +11306,11 @@ function webpackEmptyContext(req) {
 webpackEmptyContext.keys = function() { return []; };
 webpackEmptyContext.resolve = webpackEmptyContext;
 module.exports = webpackEmptyContext;
-webpackEmptyContext.id = 19;
+webpackEmptyContext.id = 25;
 
 
 /***/ }),
-/* 20 */
+/* 26 */
 /***/ (function(module, exports) {
 
 module['exports'] = function runTheTrap (text, options) {
@@ -10604,7 +11361,7 @@ module['exports'] = function runTheTrap (text, options) {
 
 
 /***/ }),
-/* 21 */
+/* 27 */
 /***/ (function(module, exports) {
 
 // please no
@@ -10714,7 +11471,7 @@ module['exports'] = function zalgo(text, options) {
 
 
 /***/ }),
-/* 22 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var colors = __webpack_require__(1);
@@ -10731,7 +11488,7 @@ module['exports'] = (function() {
 })();
 
 /***/ }),
-/* 23 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var colors = __webpack_require__(1);
@@ -10750,7 +11507,7 @@ module['exports'] = (function () {
 
 
 /***/ }),
-/* 24 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var colors = __webpack_require__(1);
@@ -10763,7 +11520,7 @@ module['exports'] = (function () {
 })();
 
 /***/ }),
-/* 25 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var colors = __webpack_require__(1);
@@ -10773,7 +11530,7 @@ module['exports'] = function (letter, i, exploded) {
 };
 
 /***/ }),
-/* 26 */
+/* 32 */
 /***/ (function(module, exports) {
 
 /*
@@ -10855,7 +11612,7 @@ Object.keys(codes).forEach(function (key) {
 });
 
 /***/ }),
-/* 27 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {/*
@@ -10922,7 +11679,7 @@ module.exports = (function () {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 28 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //
@@ -10936,77 +11693,22 @@ var colors = __webpack_require__(1);
 module['exports'] = colors;
 
 /***/ }),
-/* 29 */
+/* 35 */,
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(30)();
+exports = module.exports = __webpack_require__(7)();
 // imports
 
 
 // module
-exports.push([module.i, "\nform.form-it-form .form-it-error {\n    background: pink;\n    border: 1px solid red;\n}\n.form-it-error-block {\n    margin-top: 5px;\n    padding: 10px 5px 10px 10px;\n    background: pink;\n    border: 1px solid red;\n    border-radius: 3px;\n    font-size: .8em;\n    color: red;\n    font-weight: bold;\n}\n.form-it-form .form-it-clean {\n    background: lightgreen;\n    border: 1px solid green;\n}\n.form-it-form .form-it-error-checkbox {\n    color: red;\n}\n.form-it-form .form-it-clean-checkbox {\n    color: black;\n}\n.form-it-form .form-it-dirty.form-it-clean-checkbox {\n    color: green;\n}\n.form-it-form {\n    border: 3px solid lightyellow;\n    border-radius: 6px;\n    padding: 10px;\n}\ntextarea {\n    overflow-y: scroll;\n    height: 150px;\n    width: 650px;\n    resize: none;\n}\n\n", ""]);
+exports.push([module.i, "\n.form-it-error-block {\n  margin-top: 5px;\n  padding: 10px 5px 10px 10px;\n  background: #ffdae0;\n  border: 1px solid red;\n  border-radius: 3px;\n  font-size: .8em;\n  color: red;\n  font-weight: bold;\n}\n.form-it-input-error-checkbox {\n  color: #ff1a1a;\n}\n.form-it-input-clean {\n  background: #d2f8d2;\n  border: 1px solid green;\n}\n.form-it-input-error {\n  background: #ffdae0;\n  border: 1px solid red;\n}\n.form-it-input-clean-checkbox {\n  color: green;\n}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 30 */
-/***/ (function(module, exports) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-// css base code, injected by the css-loader
-module.exports = function() {
-	var list = [];
-
-	// return the list of modules as css string
-	list.toString = function toString() {
-		var result = [];
-		for(var i = 0; i < this.length; i++) {
-			var item = this[i];
-			if(item[2]) {
-				result.push("@media " + item[2] + "{" + item[1] + "}");
-			} else {
-				result.push(item[1]);
-			}
-		}
-		return result.join("");
-	};
-
-	// import a list of modules into the list
-	list.i = function(modules, mediaQuery) {
-		if(typeof modules === "string")
-			modules = [[null, modules, ""]];
-		var alreadyImportedModules = {};
-		for(var i = 0; i < this.length; i++) {
-			var id = this[i][0];
-			if(typeof id === "number")
-				alreadyImportedModules[id] = true;
-		}
-		for(i = 0; i < modules.length; i++) {
-			var item = modules[i];
-			// skip already imported module
-			// this implementation is not 100% perfect for weird media query combinations
-			//  when a module is imported multiple times with different media queries.
-			//  I hope this will never occur (Hey this way we have smaller bundles)
-			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-				if(mediaQuery && !item[2]) {
-					item[2] = mediaQuery;
-				} else if(mediaQuery) {
-					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-				}
-				list.push(item);
-			}
-		}
-	};
-	return list;
-};
-
-
-/***/ }),
-/* 31 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11017,7 +11719,7 @@ module.exports = re.test.bind(re);
 
 
 /***/ }),
-/* 32 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -21244,7 +21946,7 @@ return jQuery;
 
 
 /***/ }),
-/* 33 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21309,7 +22011,7 @@ module.exports = {
 
 
 /***/ }),
-/* 34 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21322,7 +22024,7 @@ module.exports = function (str) {
 
 
 /***/ }),
-/* 35 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -22892,53 +23594,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
 
 /***/ }),
-/* 36 */
-/***/ (function(module, exports) {
-
-/**
- * @fileoverview 
- * converts input paramater to string, then lowercase, 
- *      then tests whether the input is in the list of
- *      truthy values
- */
-
-/**
- * truthy
- @param {testValue} the value to test
- @return {truthy} boolean value
- */
-
-var truthy = function(testValue){
-  var truthyValue;
-  var TRUTHY_VALUES;
-  var valueIsTruthy;
-  
-  valueIsTruthy = false;
-  TRUTHY_VALUES = [
-    'yes',
-    'true',
-    '1',
-    'ok',
-    'correct'
-  ]
-
-  if(testValue){
-
-    truthyValue = testValue.toString().toLowerCase();
-
-    if (TRUTHY_VALUES.indexOf(truthyValue) > -1){
-      valueIsTruthy = true;
-    }
-    
-  }
-
-  return(valueIsTruthy);
-}
-
-module.exports = truthy;
-
-/***/ }),
-/* 37 */
+/* 42 */
 /***/ (function(module, exports) {
 
 if (typeof Object.create === 'function') {
@@ -22967,7 +23623,7 @@ if (typeof Object.create === 'function') {
 
 
 /***/ }),
-/* 38 */
+/* 43 */
 /***/ (function(module, exports) {
 
 module.exports = function isBuffer(arg) {
@@ -22978,7 +23634,7 @@ module.exports = function isBuffer(arg) {
 }
 
 /***/ }),
-/* 39 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -23506,7 +24162,7 @@ function isPrimitive(arg) {
 }
 exports.isPrimitive = isPrimitive;
 
-exports.isBuffer = __webpack_require__(38);
+exports.isBuffer = __webpack_require__(43);
 
 function objectToString(o) {
   return Object.prototype.toString.call(o);
@@ -23550,7 +24206,7 @@ exports.log = function() {
  *     prototype.
  * @param {function} superCtor Constructor function to inherit prototype from.
  */
-exports.inherits = __webpack_require__(37);
+exports.inherits = __webpack_require__(42);
 
 exports._extend = function(origin, add) {
   // Don't do anything if add isn't an object
@@ -23568,63 +24224,48 @@ function hasOwnProperty(obj, prop) {
   return Object.prototype.hasOwnProperty.call(obj, prop);
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(0)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12), __webpack_require__(0)))
 
 /***/ }),
-/* 40 */
-/***/ (function(module, exports) {
+/* 45 */
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = function normalizeComponent (
-  rawScriptExports,
-  compiledTemplate,
-  scopeId,
-  cssModules
-) {
-  var esModule
-  var scriptExports = rawScriptExports = rawScriptExports || {}
 
-  // ES6 modules interop
-  var type = typeof rawScriptExports.default
-  if (type === 'object' || type === 'function') {
-    esModule = rawScriptExports
-    scriptExports = rawScriptExports.default
+/* styles */
+__webpack_require__(49)
+
+var Component = __webpack_require__(10)(
+  /* script */
+  __webpack_require__(18),
+  /* template */
+  __webpack_require__(47),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+Component.options.__file = "/Users/mikee/Documents/Projects/dev/vue/cd-vue-starter/src/js/components/FormItInput.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] FormItInput.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-152ed7d0", Component.options)
+  } else {
+    hotAPI.reload("data-v-152ed7d0", Component.options)
   }
+})()}
 
-  // Vue.extend constructor export interop
-  var options = typeof scriptExports === 'function'
-    ? scriptExports.options
-    : scriptExports
-
-  // render functions
-  if (compiledTemplate) {
-    options.render = compiledTemplate.render
-    options.staticRenderFns = compiledTemplate.staticRenderFns
-  }
-
-  // scopedId
-  if (scopeId) {
-    options._scopeId = scopeId
-  }
-
-  // inject cssModules
-  if (cssModules) {
-    var computed = options.computed || (options.computed = {})
-    Object.keys(cssModules).forEach(function (key) {
-      var module = cssModules[key]
-      computed[key] = function () { return module }
-    })
-  }
-
-  return {
-    esModule: esModule,
-    exports: scriptExports,
-    options: options
-  }
-}
+module.exports = Component.exports
 
 
 /***/ }),
-/* 41 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -23679,23 +24320,49 @@ if (false) {
 }
 
 /***/ }),
-/* 42 */
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "form-it-input form-group"
+  }, [_c('span', {
+    domProps: {
+      "innerHTML": _vm._s(_vm.formLabel(_vm.field))
+    }
+  }), _vm._v(" "), _c('span', {
+    domProps: {
+      "innerHTML": _vm._s(_vm.formInput(_vm.field, _vm.model))
+    }
+  })])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-152ed7d0", module.exports)
+  }
+}
+
+/***/ }),
+/* 48 */,
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(29);
+var content = __webpack_require__(36);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(43)("4448a514", content, false);
+var update = __webpack_require__(11)("bfdf8d66", content, false);
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
  if(!content.locals) {
-   module.hot.accept("!!./../../../node_modules/css-loader/index.js!./../../../node_modules/vue-loader/lib/style-rewriter.js?{\"id\":\"data-v-085233fc\",\"scoped\":false,\"hasInlineConfig\":false}!./../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./FormIt.vue", function() {
-     var newContent = require("!!./../../../node_modules/css-loader/index.js!./../../../node_modules/vue-loader/lib/style-rewriter.js?{\"id\":\"data-v-085233fc\",\"scoped\":false,\"hasInlineConfig\":false}!./../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./FormIt.vue");
+   module.hot.accept("!!./../../../node_modules/css-loader/index.js!./../../../node_modules/vue-loader/lib/style-rewriter.js?{\"id\":\"data-v-152ed7d0\",\"scoped\":false,\"hasInlineConfig\":false}!./../../../node_modules/sass-loader/lib/loader.js!./../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./FormItInput.vue", function() {
+     var newContent = require("!!./../../../node_modules/css-loader/index.js!./../../../node_modules/vue-loader/lib/style-rewriter.js?{\"id\":\"data-v-152ed7d0\",\"scoped\":false,\"hasInlineConfig\":false}!./../../../node_modules/sass-loader/lib/loader.js!./../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./FormItInput.vue");
      if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
      update(newContent);
    });
@@ -23705,243 +24372,7 @@ if(false) {
 }
 
 /***/ }),
-/* 43 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/*
-  MIT License http://www.opensource.org/licenses/mit-license.php
-  Author Tobias Koppers @sokra
-  Modified by Evan You @yyx990803
-*/
-
-var hasDocument = typeof document !== 'undefined'
-
-if (typeof DEBUG !== 'undefined' && DEBUG) {
-  if (!hasDocument) {
-    throw new Error(
-    'vue-style-loader cannot be used in a non-browser environment. ' +
-    "Use { target: 'node' } in your Webpack config to indicate a server-rendering environment."
-  ) }
-}
-
-var listToStyles = __webpack_require__(44)
-
-/*
-type StyleObject = {
-  id: number;
-  parts: Array<StyleObjectPart>
-}
-
-type StyleObjectPart = {
-  css: string;
-  media: string;
-  sourceMap: ?string
-}
-*/
-
-var stylesInDom = {/*
-  [id: number]: {
-    id: number,
-    refs: number,
-    parts: Array<(obj?: StyleObjectPart) => void>
-  }
-*/}
-
-var head = hasDocument && (document.head || document.getElementsByTagName('head')[0])
-var singletonElement = null
-var singletonCounter = 0
-var isProduction = false
-var noop = function () {}
-
-// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-// tags it will allow on a page
-var isOldIE = typeof navigator !== 'undefined' && /msie [6-9]\b/.test(navigator.userAgent.toLowerCase())
-
-module.exports = function (parentId, list, _isProduction) {
-  isProduction = _isProduction
-
-  var styles = listToStyles(parentId, list)
-  addStylesToDom(styles)
-
-  return function update (newList) {
-    var mayRemove = []
-    for (var i = 0; i < styles.length; i++) {
-      var item = styles[i]
-      var domStyle = stylesInDom[item.id]
-      domStyle.refs--
-      mayRemove.push(domStyle)
-    }
-    if (newList) {
-      styles = listToStyles(parentId, newList)
-      addStylesToDom(styles)
-    } else {
-      styles = []
-    }
-    for (var i = 0; i < mayRemove.length; i++) {
-      var domStyle = mayRemove[i]
-      if (domStyle.refs === 0) {
-        for (var j = 0; j < domStyle.parts.length; j++) {
-          domStyle.parts[j]()
-        }
-        delete stylesInDom[domStyle.id]
-      }
-    }
-  }
-}
-
-function addStylesToDom (styles /* Array<StyleObject> */) {
-  for (var i = 0; i < styles.length; i++) {
-    var item = styles[i]
-    var domStyle = stylesInDom[item.id]
-    if (domStyle) {
-      domStyle.refs++
-      for (var j = 0; j < domStyle.parts.length; j++) {
-        domStyle.parts[j](item.parts[j])
-      }
-      for (; j < item.parts.length; j++) {
-        domStyle.parts.push(addStyle(item.parts[j]))
-      }
-      if (domStyle.parts.length > item.parts.length) {
-        domStyle.parts.length = item.parts.length
-      }
-    } else {
-      var parts = []
-      for (var j = 0; j < item.parts.length; j++) {
-        parts.push(addStyle(item.parts[j]))
-      }
-      stylesInDom[item.id] = { id: item.id, refs: 1, parts: parts }
-    }
-  }
-}
-
-function listToStyles (parentId, list) {
-  var styles = []
-  var newStyles = {}
-  for (var i = 0; i < list.length; i++) {
-    var item = list[i]
-    var id = item[0]
-    var css = item[1]
-    var media = item[2]
-    var sourceMap = item[3]
-    var part = { css: css, media: media, sourceMap: sourceMap }
-    if (!newStyles[id]) {
-      part.id = parentId + ':0'
-      styles.push(newStyles[id] = { id: id, parts: [part] })
-    } else {
-      part.id = parentId + ':' + newStyles[id].parts.length
-      newStyles[id].parts.push(part)
-    }
-  }
-  return styles
-}
-
-function createStyleElement () {
-  var styleElement = document.createElement('style')
-  styleElement.type = 'text/css'
-  head.appendChild(styleElement)
-  return styleElement
-}
-
-function addStyle (obj /* StyleObjectPart */) {
-  var update, remove
-  var styleElement = document.querySelector('style[data-vue-ssr-id~="' + obj.id + '"]')
-  var hasSSR = styleElement != null
-
-  // if in production mode and style is already provided by SSR,
-  // simply do nothing.
-  if (hasSSR && isProduction) {
-    return noop
-  }
-
-  if (isOldIE) {
-    // use singleton mode for IE9.
-    var styleIndex = singletonCounter++
-    styleElement = singletonElement || (singletonElement = createStyleElement())
-    update = applyToSingletonTag.bind(null, styleElement, styleIndex, false)
-    remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true)
-  } else {
-    // use multi-style-tag mode in all other cases
-    styleElement = styleElement || createStyleElement()
-    update = applyToTag.bind(null, styleElement)
-    remove = function () {
-      styleElement.parentNode.removeChild(styleElement)
-    }
-  }
-
-  if (!hasSSR) {
-    update(obj)
-  }
-
-  return function updateStyle (newObj /* StyleObjectPart */) {
-    if (newObj) {
-      if (newObj.css === obj.css &&
-          newObj.media === obj.media &&
-          newObj.sourceMap === obj.sourceMap) {
-        return
-      }
-      update(obj = newObj)
-    } else {
-      remove()
-    }
-  }
-}
-
-var replaceText = (function () {
-  var textStore = []
-
-  return function (index, replacement) {
-    textStore[index] = replacement
-    return textStore.filter(Boolean).join('\n')
-  }
-})()
-
-function applyToSingletonTag (styleElement, index, remove, obj) {
-  var css = remove ? '' : obj.css
-
-  if (styleElement.styleSheet) {
-    styleElement.styleSheet.cssText = replaceText(index, css)
-  } else {
-    var cssNode = document.createTextNode(css)
-    var childNodes = styleElement.childNodes
-    if (childNodes[index]) styleElement.removeChild(childNodes[index])
-    if (childNodes.length) {
-      styleElement.insertBefore(cssNode, childNodes[index])
-    } else {
-      styleElement.appendChild(cssNode)
-    }
-  }
-}
-
-function applyToTag (styleElement, obj) {
-  var css = obj.css
-  var media = obj.media
-  var sourceMap = obj.sourceMap
-
-  if (media) {
-    styleElement.setAttribute('media', media)
-  }
-
-  if (sourceMap) {
-    // https://developer.chrome.com/devtools/docs/javascript-debugging
-    // this makes source maps inside style tags work properly in Chrome
-    css += '\n/*# sourceURL=' + sourceMap.sources[0] + ' */'
-    // http://stackoverflow.com/a/26603875
-    css += '\n/*# sourceMappingURL=data:application/json;base64,' + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + ' */'
-  }
-
-  if (styleElement.styleSheet) {
-    styleElement.styleSheet.cssText = css
-  } else {
-    while (styleElement.firstChild) {
-      styleElement.removeChild(styleElement.firstChild)
-    }
-    styleElement.appendChild(document.createTextNode(css))
-  }
-}
-
-
-/***/ }),
-/* 44 */
+/* 50 */
 /***/ (function(module, exports) {
 
 /**
@@ -23974,7 +24405,7 @@ module.exports = function listToStyles (parentId, list) {
 
 
 /***/ }),
-/* 45 */
+/* 51 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -24002,21 +24433,21 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 46 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var Vue = __webpack_require__(10);
+var Vue = __webpack_require__(15);
 var msg = __webpack_require__(2);
-var pkgInfo = __webpack_require__(11);
+var pkgInfo = __webpack_require__(16);
 
 // application wide sass (each component may have their own sass as well)
 // import '!style-loader!css-loader!sass-loader!../sass/app.scss';
-Vue.component('form-it', __webpack_require__(9));
+Vue.component('form-it', __webpack_require__(14));
 
-var states = __webpack_require__(47);
+var states = __webpack_require__(13);
 
 new Vue({
 	el: '#v-app',
@@ -24027,7 +24458,7 @@ new Vue({
 		formID: 'testForm',
 		header: [{ type: 'html', value: '<h3>Form Header Value</h3>' }, { type: 'button', label: 'Submit' }, { type: 'html', value: '<br /><br />' }],
 		footer: [{ type: 'button', label: 'Submit' }],
-		fields: [{ key: 'fname', type: 'text', label: 'First Name', required: true, validators: [{ length: 'value.length > 3', errorMsg: 'First Name must be at least 3 characters' }, { value: 'value === \'Brady\'', errorMsg: 'First Name must be Brady' }] }, { key: 'lname', type: 'text', label: 'Last Name', validators: [{ value: 'value === \'Erickson\'', errorMsg: 'Last Name must be Erickson' }] }, { key: 'dob', type: 'date', label: 'DOB' }, { key: 'state', type: 'select', label: 'State', options: states, validators: [{ value: "value === 'CA'", errorMsg: 'State must be CA - California' }] }, { key: 'gender', type: 'radio', label: 'Gender', choices: { male: 'Male', female: 'Female' }, validators: [{ value: "value !== ''" }] }, { key: 'married', type: 'checkbox', label: 'Married', validators: [{ value: 'isTruthy(value)' }] }, { key: 'bio', type: 'textarea', label: 'Biography', attrs: { rows: 5, cols: 85 }, validators: [{ length: 'value.length > 10' }] }],
+		fields: [{ key: 'fname', type: 'text', label: 'First Name', required: true, validators: [{ length: 'value.length > 3', errorMsg: 'First Name must be at least 3 characters' }, { value: 'value === \'Brady\'', errorMsg: 'First Name must be Brady' }] }, { key: 'lname', type: 'text', label: 'Last Name', validators: [{ value: 'value === \'Erickson\'', errorMsg: 'Last Name must be Erickson' }] }, { key: 'dob', type: 'date', label: 'DOB' }, { key: 'state', type: 'select', label: 'State', options: states, validators: [{ value: "value === 'CA'", errorMsg: 'State must be CA - California' }] }, { key: 'gender', type: 'radio', label: 'Gender', choices: { male: 'Male', female: 'Female' }, validators: [{ value: "value !== ''" }] }, { key: 'married', type: 'checkbox', label: 'Married', validators: [{ value: 'isTruthy(value)' }] }, { key: 'bio', type: 'textarea', label: 'Biography', attrs: { rows: 5, cols: 50 }, validators: [{ length: 'value.length > 10', errorMsg: 'Biography must be at least 10 characters' }] }],
 		model: [{ key: 'fname', value: 'Brady' }, { key: 'lname', value: 'Erickson' }, { key: 'dob', value: '1993-02-28' }, { key: 'bio', value: 'now is the time for all good men to come the aid of their country and fight, fight for the right to win!  Impeach Trump!' }, { key: 'state', value: 'CA' }, { key: 'gender', value: 'male' }, { key: 'married', value: true }]
 	},
 	methods: {},
@@ -24038,479 +24469,37 @@ new Vue({
 });
 
 /***/ }),
-/* 47 */
-/***/ (function(module, exports) {
-
-module.exports = [
-	{
-		"value": "Alabama",
-		"name": "AL"
-	},
-	{
-		"value": "Alaska",
-		"name": "AK"
-	},
-	{
-		"value": "American Samoa",
-		"name": "AS"
-	},
-	{
-		"value": "Arizona",
-		"name": "AZ"
-	},
-	{
-		"value": "Arkansas",
-		"name": "AR"
-	},
-	{
-		"value": "California",
-		"name": "CA"
-	},
-	{
-		"value": "Colorado",
-		"name": "CO"
-	},
-	{
-		"value": "Connecticut",
-		"name": "CT"
-	},
-	{
-		"value": "Delaware",
-		"name": "DE"
-	},
-	{
-		"value": "District Of Columbia",
-		"name": "DC"
-	},
-	{
-		"value": "Federated States Of Micronesia",
-		"name": "FM"
-	},
-	{
-		"value": "Florida",
-		"name": "FL"
-	},
-	{
-		"value": "Georgia",
-		"name": "GA"
-	},
-	{
-		"value": "Guam",
-		"name": "GU"
-	},
-	{
-		"value": "Hawaii",
-		"name": "HI"
-	},
-	{
-		"value": "Idaho",
-		"name": "ID"
-	},
-	{
-		"value": "Illinois",
-		"name": "IL"
-	},
-	{
-		"value": "Indiana",
-		"name": "IN"
-	},
-	{
-		"value": "Iowa",
-		"name": "IA"
-	},
-	{
-		"value": "Kansas",
-		"name": "KS"
-	},
-	{
-		"value": "Kentucky",
-		"name": "KY"
-	},
-	{
-		"value": "Louisiana",
-		"name": "LA"
-	},
-	{
-		"value": "Maine",
-		"name": "ME"
-	},
-	{
-		"value": "Marshall Islands",
-		"name": "MH"
-	},
-	{
-		"value": "Maryland",
-		"name": "MD"
-	},
-	{
-		"value": "Massachusetts",
-		"name": "MA"
-	},
-	{
-		"value": "Michigan",
-		"name": "MI"
-	},
-	{
-		"value": "Minnesota",
-		"name": "MN"
-	},
-	{
-		"value": "Mississippi",
-		"name": "MS"
-	},
-	{
-		"value": "Missouri",
-		"name": "MO"
-	},
-	{
-		"value": "Montana",
-		"name": "MT"
-	},
-	{
-		"value": "Nebraska",
-		"name": "NE"
-	},
-	{
-		"value": "Nevada",
-		"name": "NV"
-	},
-	{
-		"value": "New Hampshire",
-		"name": "NH"
-	},
-	{
-		"value": "New Jersey",
-		"name": "NJ"
-	},
-	{
-		"value": "New Mexico",
-		"name": "NM"
-	},
-	{
-		"value": "New York",
-		"name": "NY"
-	},
-	{
-		"value": "North Carolina",
-		"name": "NC"
-	},
-	{
-		"value": "North Dakota",
-		"name": "ND"
-	},
-	{
-		"value": "Northern Mariana Islands",
-		"name": "MP"
-	},
-	{
-		"value": "Ohio",
-		"name": "OH"
-	},
-	{
-		"value": "Oklahoma",
-		"name": "OK"
-	},
-	{
-		"value": "Oregon",
-		"name": "OR"
-	},
-	{
-		"value": "Palau",
-		"name": "PW"
-	},
-	{
-		"value": "Pennsylvania",
-		"name": "PA"
-	},
-	{
-		"value": "Puerto Rico",
-		"name": "PR"
-	},
-	{
-		"value": "Rhode Island",
-		"name": "RI"
-	},
-	{
-		"value": "South Carolina",
-		"name": "SC"
-	},
-	{
-		"value": "South Dakota",
-		"name": "SD"
-	},
-	{
-		"value": "Tennessee",
-		"name": "TN"
-	},
-	{
-		"value": "Texas",
-		"name": "TX"
-	},
-	{
-		"value": "Utah",
-		"name": "UT"
-	},
-	{
-		"value": "Vermont",
-		"name": "VT"
-	},
-	{
-		"value": "Virgin Islands",
-		"name": "VI"
-	},
-	{
-		"value": "Virginia",
-		"name": "VA"
-	},
-	{
-		"value": "Washington",
-		"name": "WA"
-	},
-	{
-		"value": "West Virginia",
-		"name": "WV"
-	},
-	{
-		"value": "Wisconsin",
-		"name": "WI"
-	},
-	{
-		"value": "Wyoming",
-		"name": "WY"
-	}
-];
-
-/***/ }),
-/* 48 */,
-/* 49 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _truthy = __webpack_require__(36);
-
-var _truthy2 = _interopRequireDefault(_truthy);
-
-var _cdMessenger = __webpack_require__(2);
-
-var _cdMessenger2 = _interopRequireDefault(_cdMessenger);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-//
-//
-//
-//
-//
-//
-//
-
-exports.default = {
-    name: 'form-it-input',
-    props: ['field', 'model'],
-    data: function data() {
-        return {};
-    },
-    methods: {
-        formLabel: function formLabel(field) {
-            return _buildLabel(field);
-        },
-        formInput: function formInput(field, data) {
-            return _buildInput(field, data);
-        }
-    }
-
-};
-
-/* ==================================================================
- * COMPONENT PRIVATE METHODS
- * ================================================================== */
-
-function _addAttributes() {
-    var attrs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-
-    var result = '';
-    if (attrs) {
-        var keys = Object.keys(attrs);
-        var values = Object.values(attrs);
-        for (var i = 0; i < keys.length; i++) {
-            result += ' ' + keys[i] + '=' + values[i];
-        }
-    }
-    return result;
-}
-
-function _getValue(key, data) {
-    var result = data.find(function (field) {
-        return field.key === key;
-    });
-    return result ? result.value : '';
-}
-
-function _buildLabel(field) {
-    var obj = '';
-    if (field.type === 'select' || field.type === 'text' || field.type === 'date') {
-        obj += '<label for="' + field.key + '">' + field.label + '</label>';
-        if (field.type === 'select') {
-            obj += '<br />';
-        }
-    }
-    return obj;
-}
-
-function _buildInput(field, data) {
-    var value = _getValue(field.key, data);
-    var obj = '';
-    switch (field.type) {
-        case 'text':
-            obj = '\n                    <input\n                        type="' + field.type + '"\n                        id="' + field.key + '"\n                        name="' + field.key + '"\n                        class="form-control"\n                        value="' + value + '" ' + (field.readonly ? 'readonly' : '') + '\n                        ' + (field.disabled ? 'disabled' : '') + '\n                        required="' + field.required + '"\n                    />\n                ';
-            break;
-        case 'checkbox':
-            obj = '\n                    <input\n                        type="' + field.type + '"\n                        id="' + field.key + '"\n                        name="' + field.key + '"\n                        class="form-check-input"\n                        ' + (field.readonly || field.disabled ? 'disabled' : '') + '\n                        onClick="(this.checked ? this.value = true : this.value = false)"\n                        ' + ((0, _truthy2.default)(value) ? 'checked' : '') + '\n                        value="' + value + '"\n                    /> <label for="' + field.key + '">' + field.label + '</label>\n                ';
-            break;
-        case 'radio':
-            var keys = Object.keys(field.choices);
-            var values = Object.values(field.choices);
-            if (keys.length > 0) {
-                keys.forEach(function (choice, idx) {
-                    var checked = value.toLowerCase() === choice.toLowerCase() ? 'checked' : '';
-                    var disabled = field.disabled ? 'disabled' : '';
-                    obj += '\n\t\t\t\t\t\t    <input\n\t\t\t\t\t\t        type="radio"\n\t\t\t\t\t\t        id="' + field.key + '"\n\t\t\t\t\t\t        ' + disabled + '\n\t\t\t\t\t\t        name="' + field.key + '"\n                                value="' + choice.toLowerCase() + '" ' + disabled + '> ' + values[idx] + '\n\t\t\t\t\t\t';
-                });
-            }
-            break;
-        case 'textarea':
-            obj = '\n            \t    <label for="' + field.key + '">' + field.label + '</label> <br />\n            \t    <textarea id="' + field.key + '" name="' + field.key + '" ' + _addAttributes(field.attrs) + '>' + value + '</textarea>\n            \t';
-            break;
-        case 'select':
-            var options = '';
-            field.options.forEach(function (item) {
-                options += '<option ' + (item.name === value ? 'selected' : '') + ' value="' + item.name + '">' + item.value + '</option>';
-            });
-            obj = '\n                    <select id="' + field.key + '" name="' + field.key + '">' + options + '</select>\n                ';
-            break;
-        case 'date':
-            obj = '\n                    <input\n                        type="' + field.type + '"\n                        id="' + field.key + '"\n                        name="' + field.key + '"\n                        class="form-control"\n                        value="' + value + '" ' + (field.readonly ? 'readonly' : '') + '\n                        ' + (field.disabled ? 'disabled' : '') + '\n                        required="' + field.required + '"\n                    />\n                ';
-            break;
-        default:
-            _cdMessenger2.default.error('Unsupported Field Type: ' + field.type);
-            break;
-    }
-
-    obj += _buildFieldError(field);
-    return obj;
-}
-
-function _buildFieldError(field) {
-    var obj = '\n    \t    <div class="form-it-error-block hide" id="error-' + field.key + '"></div>\n    \t';
-    return obj;
-}
-
-/***/ }),
-/* 50 */,
-/* 51 */,
-/* 52 */,
 /* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
+exports = module.exports = __webpack_require__(7)();
+// imports
 
-/* styles */
-__webpack_require__(58)
 
-var Component = __webpack_require__(40)(
-  /* script */
-  __webpack_require__(49),
-  /* template */
-  __webpack_require__(54),
-  /* scopeId */
-  null,
-  /* cssModules */
-  null
-)
-Component.options.__file = "/Users/mikee/Documents/Projects/dev/vue/cd-vue-starter/src/js/components/FormItInput.vue"
-if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
-if (Component.options.functional) {console.error("[vue-loader] FormItInput.vue: functional components are not supported with templates, they should use render functions.")}
+// module
+exports.push([module.i, "\n.form-it-form {\n  border: 3px solid lightyellow;\n  border-radius: 6px;\n  padding: 10px;\n}\ntextarea {\n  overflow-y: scroll;\n  height: 150px;\n  resize: none;\n}\n", ""]);
 
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-152ed7d0", Component.options)
-  } else {
-    hotAPI.reload("data-v-152ed7d0", Component.options)
-  }
-})()}
-
-module.exports = Component.exports
+// exports
 
 
 /***/ }),
 /* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "form-it-input form-group"
-  }, [_c('span', {
-    domProps: {
-      "innerHTML": _vm._s(_vm.formLabel(_vm.field))
-    }
-  }), _vm._v(" "), _c('span', {
-    domProps: {
-      "innerHTML": _vm._s(_vm.formInput(_vm.field, _vm.model))
-    }
-  })])
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-152ed7d0", module.exports)
-  }
-}
-
-/***/ }),
-/* 55 */,
-/* 56 */,
-/* 57 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(30)();
-// imports
-
-
-// module
-exports.push([module.i, "\n.form-it-input {\n}\n\n\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 58 */
-/***/ (function(module, exports, __webpack_require__) {
-
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(57);
+var content = __webpack_require__(53);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(43)("6dab4b30", content, false);
+var update = __webpack_require__(11)("d1e5c31e", content, false);
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
  if(!content.locals) {
-   module.hot.accept("!!./../../../node_modules/css-loader/index.js!./../../../node_modules/vue-loader/lib/style-rewriter.js?{\"id\":\"data-v-152ed7d0\",\"scoped\":false,\"hasInlineConfig\":false}!./../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./FormItInput.vue", function() {
-     var newContent = require("!!./../../../node_modules/css-loader/index.js!./../../../node_modules/vue-loader/lib/style-rewriter.js?{\"id\":\"data-v-152ed7d0\",\"scoped\":false,\"hasInlineConfig\":false}!./../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./FormItInput.vue");
+   module.hot.accept("!!./../../../node_modules/css-loader/index.js!./../../../node_modules/vue-loader/lib/style-rewriter.js?{\"id\":\"data-v-085233fc\",\"scoped\":false,\"hasInlineConfig\":false}!./../../../node_modules/sass-loader/lib/loader.js!./../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./FormIt.vue", function() {
+     var newContent = require("!!./../../../node_modules/css-loader/index.js!./../../../node_modules/vue-loader/lib/style-rewriter.js?{\"id\":\"data-v-085233fc\",\"scoped\":false,\"hasInlineConfig\":false}!./../../../node_modules/sass-loader/lib/loader.js!./../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./FormIt.vue");
      if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
      update(newContent);
    });

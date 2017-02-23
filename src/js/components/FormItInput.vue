@@ -155,10 +155,38 @@
 
 </script>
 
-<style >
+<style lang="sass">
     .form-it-input {
 
     }
 
+    .form-it-error-block {
+        margin-top: 5px;
+        padding: 10px 5px 10px 10px;
+        background: lighten(pink, 5%);
+        border: 1px solid red;
+        border-radius: 3px;
+        font-size: .8em;
+        color: red;
+        font-weight: bold;
+    }
+
+    .form-it-input-error-checkbox {
+        color: lighten(red, 5%);
+    }
+
+    .form-it-input-clean {
+        background: lighten(lightgreen, 15%);
+        border: 1px solid green;
+    }
+
+    .form-it-input-error {
+        background: lighten(pink, 5%);
+        border: 1px solid red;
+    }
+
+    .form-it-input-clean-checkbox {
+        color: green;
+    }
 
 </style>

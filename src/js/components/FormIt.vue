@@ -53,9 +53,6 @@
             }
             return obj;
         },
-        buildFieldError: (item) => {
-        	return _buildFieldError(item);
-        },
         handleFormChange: function (evt, fields) {
 			this.formData = updateFormData();
 			let errors = formValidation(evt, fields);
@@ -164,15 +161,15 @@
                         let node = $(`#${fields[idx].key}`);
                         if (node.type === 'checkbox') {
                             node = $(`label[for="${fields[idx].key}"]`);
-                            if (node.hasClass('form-it-dirty')) {
-                                node.addClass('form-it-clean-checkbox');
-                                node.removeClass('form-it-error-checkbox');
+                            if (node.hasClass('form-it-input-dirty')) {
+                                node.addClass('form-it-input-clean-checkbox');
+                                node.removeClass('form-it-input-error-checkbox');
                             }
                         }
                         else {
-                            if (node.hasClass('form-it-dirty') > 0) {
-                                node.addClass('form-it-clean');
-                                node.removeClass('form-it-error');
+                            if (node.hasClass('form-it-input-dirty') > 0) {
+                                node.addClass('form-it-input-clean');
+                                node.removeClass('form-it-input-error');
                             }
                         }
                     }
@@ -182,15 +179,15 @@
 						let node = $(`#${fields[idx].key}`);
 						if (fields[idx].type === 'checkbox') {
                             node = $(`label[for="${fields[idx].key}"]`);
-                            node.removeClass('form-it-error-checkbox');
-                            if (node.hasClass('form-it-dirty')) {
-                                node.addClass('form-it-clean-checkbox');
+                            node.removeClass('form-it-input-error-checkbox');
+                            if (node.hasClass('form-it-input-dirty')) {
+                                node.addClass('form-it-input-clean-checkbox');
                             }
                         }
                         else {
-                            node.removeClass('form-it-error');
-							if (node.hasClass('form-it-dirty')) {
-								node.addClass('form-it-clean');
+                            node.removeClass('form-it-input-error');
+							if (node.hasClass('form-it-input-dirty')) {
+								node.addClass('form-it-input-clean');
                             }
                         }
                     }
@@ -212,19 +209,19 @@
 			let id = error.key;
 			if (error.type === 'checkbox') {
 				let node = $(`label[for="${id}"]`);
-                node.removeClass('form-it-clean-checkbox');
-                node.addClass('form-it-error-checkbox');
-                node.addClass('form-it-dirty');
+                node.removeClass('form-it-input-clean-checkbox');
+                node.addClass('form-it-input-error-checkbox');
+                node.addClass('form-it-input-dirty');
             }
             else {
                 let node = $(`#${id}`);
-                node.removeClass('form-it-clean');
-                node.addClass('form-it-error');
-                node.addClass('form-it-dirty');
+                node.removeClass('form-it-input-clean');
+                node.addClass('form-it-input-error');
+                node.addClass('form-it-input-dirty');
             }
 			let errorBlock = $('#error-' + id);
 			let errMsgs = errorBlock.html();
-			errMsgs += `<div class=".form-it-error-item">✘ ${error.errorMsg} [Actual Value: ${error.actual}]</div>`;
+			errMsgs += `<div>✘ ${error.errorMsg} [Actual Value: ${error.actual}]</div>`;
             errorBlock.html(errMsgs);
 			errorBlock.removeClass('hide');
         });
@@ -232,53 +229,19 @@
 		return errors.length > 0;
     }
 
-    function _buildFieldError(field) {
-		return (`
-            <div class="form-it-error-block" id="error-${field.key}"></div>
-        `);
-    }
-
 </script>
 
-<style >
-    form.form-it-form .form-it-error {
-        background: pink;
-        border: 1px solid red;
-    }
+<style lang="sass">
 
-    .form-it-error-block {
-        margin-top: 5px;
-        padding: 10px 5px 10px 10px;
-        background: pink;
-        border: 1px solid red;
-        border-radius: 3px;
-        font-size: .8em;
-        color: red;
-        font-weight: bold;
-    }
-
-    .form-it-form .form-it-clean {
-        background: lightgreen;
-        border: 1px solid green;
-    }
-    .form-it-form .form-it-error-checkbox {
-        color: red;
-    }
-    .form-it-form .form-it-clean-checkbox {
-        color: black;
-    }
-    .form-it-form .form-it-dirty.form-it-clean-checkbox {
-        color: green;
-    }
     .form-it-form {
         border: 3px solid lightyellow;
         border-radius: 6px;
         padding: 10px;
     }
+
     textarea {
         overflow-y: scroll;
         height: 150px;
-        width: 650px;
         resize: none;
     }
 
