@@ -4,6 +4,7 @@ const pkgInfo = require('../../package.json');
 
 // application wide sass (each component may have their own sass as well)
 // import '!style-loader!css-loader!sass-loader!../sass/app.scss';
+
 Vue.component('form-it', require('./components/FormIt.vue'));
 
 const states = require('../../data/us-states.json');
@@ -31,6 +32,7 @@ new Vue({
 			{key: 'lname', type: 'text', label: 'Last Name', validators: [
 				{value: 'value === \'Erickson\'', errorMsg: 'Last Name must be Erickson'}
 			]},
+      {key: 'email', type: 'email', label: 'EMail'},
 			{key: 'dob', type: 'date', label: 'DOB'},
 			{key: 'state', type: 'select', label: 'State', options: states, validators: [
 				{value: "value === 'CA'", errorMsg: 'State must be CA - California'}
@@ -48,6 +50,7 @@ new Vue({
     model: [
       {key: 'fname', value: 'Brady'},
       {key: 'lname', value: 'Erickson'},
+      {key: 'email', value: 'brady.erickson@mac.com'},
       {key: 'dob', value: '1993-02-28'},
       {key: 'bio', value: 'now is the time for all good men to come the aid of their country and fight, fight for the right to win!  Impeach Trump!'},
       {key: 'state', value: 'CA'},
