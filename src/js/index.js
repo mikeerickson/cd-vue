@@ -26,29 +26,29 @@ new Vue({
 		],
     fields: [
 			{key: 'fname', type: 'text', label: 'First Name', validators: [
-				{type: 'required', errorMsg: 'First Name is required'},
-				{type: 'length:3', errorMsg: 'First Name must be at least 3 characters'},
-				{type: 'value:Brady', errorMsg: 'First Name must be Brady'}
+				{rule: 'required', errorMsg: 'First Name is required'},
+				{rule: 'length:3', errorMsg: 'First Name must be at least 3 characters'},
+				{rule: 'value:Brady', errorMsg: 'First Name must be Brady'}
 			]},
 			{key: 'lname', type: 'text', label: 'Last Name', validators: [
-				{type: 'value:Erickson', errorMsg: 'Last Name must be Erickson'}
+				{rule: 'value:Erickson', errorMsg: 'Last Name must be Erickson'}
 			]},
       {key: 'email', type: 'email', label: 'EMail', validators: [
-        {type: 'required', errorMsg: 'E-Mail Address Required'},
-        {type: 'email', errorMsg: 'Invalid E-Mail'}
+        {rule: 'required', errorMsg: 'E-Mail Address Required'},
+        {rule: 'email', errorMsg: 'Invalid E-Mail'}
       ]},
 			{key: 'dob', type: 'date', label: 'DOB'},
 			{key: 'state', type: 'select', label: 'State', options: states, validators: [
-				{type: 'value:CA', errorMsg: 'State must be CA - California'}
+				{rule: 'value:CA', errorMsg: 'State must be CA - California'}
 			]},
 			{key: 'gender', type: 'radio', label: 'Gender', choices: {male: 'Male', female: 'Female'}, validators: [
-				{type: "length:1"}
+				{rule: 'length:1'}
 			]},
 			{key: 'married', type: 'checkbox', label: 'Married', validators: [
 				{value: 'isTruthy(value)', errorMsg: 'Must Be Married'}
 			]},
 			{key: 'bio', type: 'textarea', label: 'Biography', attrs: {rows: 5, cols: 50}, validators: [
-				{type: 'length:10', errorMsg: 'Biography must be at least 10 characters'}
+				{rule: 'length:10', errorMsg: 'Biography must be at least 10 characters'}
 			]}
 		],
     model: [

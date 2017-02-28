@@ -124,43 +124,39 @@
     });
   }
 
-  function validate(type, value) {
+  function validate(rule, value) {
   	let opts = '';
-    let pos = type.indexOf(':');
+    let pos = rule.indexOf(':');
   	if (pos > 0) {
-  		opts = type.substr(pos+1);
-  		type = type.substr(0, pos);
+  		opts = rule.substr(pos + 1);
+  		rule = rule.substr(0, pos);
     }
 
-  	switch (type) {
+  	switch (rule) {
       case 'email':
-      	return itemValidator.isEmail(value);
-      	break;
+        return itemValidator.isEmail(value);
       case 'required':
-      	return ! itemValidator.isEmpty(value);
-      	break;
+        return !itemValidator.isEmpty(value);
       case 'length':
-      	if(opts.length !== 0) {
+        if (opts.length !== 0) {
           let [min, max] = opts.split(';');
           if (typeof max === 'undefined') {
-          	max = value.length;
+            max = value.length;
           }
           return itemValidator.isLength(value, {min, max});
         }
         else {
-      		return true;
+          return true;
         }
-        break;
       case 'value':
-      	return itemValidator.equals(opts, value);
-      	break;
+        return itemValidator.equals(opts, value);
     }
     return true;
   }
 
   function formValidation(evt, fields) {
-    let event = evt;
-    let form = evt.currentTarget;
+    let event  = evt;
+    let form   = evt.currentTarget;
     let errors = [];
 
     fields.forEach((input, idx, fields) => {
@@ -178,11 +174,12 @@
           let result    = false;
           let key       = Object.keys(validators[i])[0];
           let rule      = validators[i][key].replace('model', 'value');
-          let type      = validator.hasOwnProperty('type') ? validator.type : '';
+          let validRule = validator.hasOwnProperty('rule') ? validator.rule : '';
 
-          if (type !== '') {
-          	result = validate(type, value);
-          } else {
+          if (validRule !== '') {
+            result = validate(validRule, value);
+          }
+          else {
             if (rule === 'isTruthy(value)') {
               result = isTruthy(value);
             }
@@ -193,10 +190,10 @@
 
           if (!result) {
             errors.push({
-              key: fields[idx].key,
-              rule: rule,
-              actual: value,
-              type: fields[idx].type,
+              key:      fields[idx].key,
+              rule:     rule,
+              actual:   value,
+              type:     fields[idx].type,
               errorMsg: errorMsg
             });
             let node = $(`#${fields[idx].key}`);

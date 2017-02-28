@@ -10978,21 +10978,19 @@ function successDialog(msg) {
   });
 }
 
-function validate(type, value) {
+function validate(rule, value) {
   var opts = '';
-  var pos = type.indexOf(':');
+  var pos = rule.indexOf(':');
   if (pos > 0) {
-    opts = type.substr(pos + 1);
-    type = type.substr(0, pos);
+    opts = rule.substr(pos + 1);
+    rule = rule.substr(0, pos);
   }
 
-  switch (type) {
+  switch (rule) {
     case 'email':
       return _validator2.default.isEmail(value);
-      break;
     case 'required':
       return !_validator2.default.isEmpty(value);
-      break;
     case 'length':
       if (opts.length !== 0) {
         var _opts$split = opts.split(';'),
@@ -11007,10 +11005,8 @@ function validate(type, value) {
       } else {
         return true;
       }
-      break;
     case 'value':
       return _validator2.default.equals(opts, value);
-      break;
   }
   return true;
 }
@@ -11035,10 +11031,10 @@ function formValidation(evt, fields) {
         var result = false;
         var key = Object.keys(validators[_i])[0];
         var rule = validators[_i][key].replace('model', 'value');
-        var type = validator.hasOwnProperty('type') ? validator.type : '';
+        var validRule = validator.hasOwnProperty('rule') ? validator.rule : '';
 
-        if (type !== '') {
-          result = validate(type, value);
+        if (validRule !== '') {
+          result = validate(validRule, value);
         } else {
           if (rule === 'isTruthy(value)') {
             result = (0, _truthy2.default)(value);
@@ -27306,7 +27302,7 @@ new Vue({
 		formID: 'testForm',
 		header: [{ type: 'html', value: '<h3>Form Header Value</h3>' }, { type: 'button', label: 'Submit' }, { type: 'html', value: '<br /><br />' }],
 		footer: [{ type: 'button', label: 'Submit' }],
-		fields: [{ key: 'fname', type: 'text', label: 'First Name', validators: [{ type: 'required', errorMsg: 'First Name is required' }, { type: 'length:3', errorMsg: 'First Name must be at least 3 characters' }, { type: 'value:Brady', errorMsg: 'First Name must be Brady' }] }, { key: 'lname', type: 'text', label: 'Last Name', validators: [{ type: 'value:Erickson', errorMsg: 'Last Name must be Erickson' }] }, { key: 'email', type: 'email', label: 'EMail', validators: [{ type: 'required', errorMsg: 'E-Mail Address Required' }, { type: 'email', errorMsg: 'Invalid E-Mail' }] }, { key: 'dob', type: 'date', label: 'DOB' }, { key: 'state', type: 'select', label: 'State', options: states, validators: [{ type: 'value:CA', errorMsg: 'State must be CA - California' }] }, { key: 'gender', type: 'radio', label: 'Gender', choices: { male: 'Male', female: 'Female' }, validators: [{ type: "length:1" }] }, { key: 'married', type: 'checkbox', label: 'Married', validators: [{ value: 'isTruthy(value)', errorMsg: 'Must Be Married' }] }, { key: 'bio', type: 'textarea', label: 'Biography', attrs: { rows: 5, cols: 50 }, validators: [{ type: 'length:10', errorMsg: 'Biography must be at least 10 characters' }] }],
+		fields: [{ key: 'fname', type: 'text', label: 'First Name', validators: [{ rule: 'required', errorMsg: 'First Name is required' }, { rule: 'length:3', errorMsg: 'First Name must be at least 3 characters' }, { rule: 'value:Brady', errorMsg: 'First Name must be Brady' }] }, { key: 'lname', type: 'text', label: 'Last Name', validators: [{ rule: 'value:Erickson', errorMsg: 'Last Name must be Erickson' }] }, { key: 'email', type: 'email', label: 'EMail', validators: [{ rule: 'required', errorMsg: 'E-Mail Address Required' }, { rule: 'email', errorMsg: 'Invalid E-Mail' }] }, { key: 'dob', type: 'date', label: 'DOB' }, { key: 'state', type: 'select', label: 'State', options: states, validators: [{ rule: 'value:CA', errorMsg: 'State must be CA - California' }] }, { key: 'gender', type: 'radio', label: 'Gender', choices: { male: 'Male', female: 'Female' }, validators: [{ rule: 'length:1' }] }, { key: 'married', type: 'checkbox', label: 'Married', validators: [{ value: 'isTruthy(value)', errorMsg: 'Must Be Married' }] }, { key: 'bio', type: 'textarea', label: 'Biography', attrs: { rows: 5, cols: 50 }, validators: [{ rule: 'length:10', errorMsg: 'Biography must be at least 10 characters' }] }],
 		model: [{ key: 'fname', value: 'Brady' }, { key: 'lname', value: 'Erickson' }, { key: 'email', value: 'brady.erickson@mac.com' }, { key: 'dob', value: '1993-02-28' }, { key: 'bio', value: 'now is the time for all good men to come the aid of their country and fight, fight for the right to win!  Impeach Trump!' }, { key: 'state', value: 'CA' }, { key: 'gender', value: 'male' }, { key: 'married', value: true }]
 	},
 	methods: {},
