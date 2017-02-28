@@ -21,12 +21,12 @@
 
 <script>
 
-  import $           from 'jquery';
-  import msg         from 'cd-messenger';
-  import isTruthy    from 'truthy';
-  import swal        from 'sweetalert2';
-  import FormItInput from './FormItInput.vue';
-  import validator   from 'validator';
+  import $             from 'jquery';
+  import msg           from 'cd-messenger';
+  import isTruthy      from 'truthy';
+  import swal          from 'sweetalert2';
+  import FormItInput   from './FormItInput.vue';
+  import itemValidator from 'validator';            // https://www.npmjs.com/package/validator
 
   export default {
     components: {
@@ -124,6 +124,40 @@
     });
   }
 
+  function validate(type, value) {
+  	let opts = '';
+    let pos = type.indexOf(':');
+  	if (pos > 0) {
+  		opts = type.substr(pos+1);
+  		type = type.substr(0, pos);
+    }
+
+  	switch (type) {
+      case 'email':
+      	return itemValidator.isEmail(value);
+      	break;
+      case 'required':
+      	return ! itemValidator.isEmpty(value);
+      	break;
+      case 'length':
+      	if(opts.length !== 0) {
+          let [min, max] = opts.split(';');
+          if (typeof max === 'undefined') {
+          	max = value.length;
+          }
+          return itemValidator.isLength(value, {min, max});
+        }
+        else {
+      		return true;
+        }
+        break;
+      case 'value':
+      	return itemValidator.equals(opts, value);
+      	break;
+    }
+    return true;
+  }
+
   function formValidation(evt, fields) {
     let event = evt;
     let form = evt.currentTarget;
@@ -140,16 +174,21 @@
       if (input.hasOwnProperty('validators')) {
         for (let i = 0; i < validators.length; i++) {
           let validator = validators[i];
-          let errorMsg = validator.hasOwnProperty('errorMsg') ? validator.errorMsg : '';
-          let result = false;
-          let key = Object.keys(validators[i])[0];
-          let rule = validators[i][key].replace('model', 'value');
+          let errorMsg  = validator.hasOwnProperty('errorMsg') ? validator.errorMsg : '';
+          let result    = false;
+          let key       = Object.keys(validators[i])[0];
+          let rule      = validators[i][key].replace('model', 'value');
+          let type      = validator.hasOwnProperty('type') ? validator.type : '';
 
-          if (rule === 'isTruthy(value)') {
-            result = isTruthy(value);
-          }
-          else {
-            result = eval(rule);
+          if (type !== '') {
+          	result = validate(type, value);
+          } else {
+            if (rule === 'isTruthy(value)') {
+              result = isTruthy(value);
+            }
+            else {
+              result = eval(rule);
+            }
           }
 
           if (!result) {
@@ -223,7 +262,7 @@
       }
       let errorBlock = $('#error-' + id);
       let errMsgs = errorBlock.html();
-      errMsgs += `<div>✘ ${error.errorMsg} [Actual Value: ${error.actual}]</div>`;
+      errMsgs += `<div>✘ ${error.errorMsg}</div>`;
       errorBlock.html(errMsgs);
       errorBlock.removeClass('hide');
     });

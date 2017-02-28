@@ -51,7 +51,7 @@
 
   function _buildLabel(field) {
     let obj = '';
-    if ((field.type === 'select') || (field.type === 'text') || (field.type === 'date')) {
+    if ((field.type === 'select') || (field.type === 'email') || (field.type === 'text') || (field.type === 'date')) {
       obj += `<label for="${field.key}">${field.label}</label>`;
       if (field.type === 'select') {
         obj += '<br />';
@@ -65,6 +65,7 @@
     let obj = '';
     switch (field.type) {
       case 'text':
+      case 'email':
         obj = `
             <input
                 type="${field.type}"
@@ -73,7 +74,6 @@
                 class="form-control"
                 value="${value}" ${field.readonly ? 'readonly' : ''}
                 ${field.disabled ? 'disabled' : ''}
-                required="${field.required}"
             />
         `;
         break;
@@ -104,7 +104,7 @@
                 id="${field.key}"
                 ${disabled}
                 name="${field.key}"
-                value="${choice.toLowerCase()}" ${disabled}> ${values[idx]}
+                value="${choice.toLowerCase()}" ${checked}> ${values[idx]}
 						`;
           });
         }
@@ -133,7 +133,6 @@
             class="form-control"
             value="${value}" ${field.readonly ? 'readonly' : ''}
             ${field.disabled ? 'disabled' : ''}
-            required="${field.required}"
           />
         `;
         break;
@@ -166,7 +165,7 @@
       border-radius: 3px;
       font-size: .8em;
       color:red;
-      font-weight:bold;
+      /*font-weight:bold;*/
   }
 
     .form-it-input-error-checkbox {
