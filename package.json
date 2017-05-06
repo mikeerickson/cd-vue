@@ -17,7 +17,9 @@
     "test": "ava",
     "test:mocha": "mocha --compilers js:babel-core/register --require jsdom-global/register specs/**/*Spec.js",
     "test:mocha:watch": "npm run test:mocha -- -w",
-    "test:watch": "ava --watch"
+    "test:watch": "ava --watch",
+    "serve": "lite-server",
+    "start": "lite-server"
   },
   "ava": {
     "require": [
