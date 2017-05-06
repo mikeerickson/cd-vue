@@ -2,22 +2,24 @@
 ### VueJS Starter
 
 
-View on [npm](https://www.npmjs.com/package/cd-vue)
+### Getting Started
 
-
-### Install with [npm](npmjs.org)
-
-```sh
-npm i -S cd-vue
-```
-
-### Install with [yarn](https://yarnpkg.com/lang/en/docs/install/#mac-tab)
+Install Repo
 
 ```sh
-yarn add cd-vue
+$ git clone https://github.com/mikeerickson/cd-vue-starter.git
 ```
 
+Install dependencies
 
+```
+$ npm i
+```
+
+Start Development Server
+```
+$ npm start
+```
 
 ### License
 

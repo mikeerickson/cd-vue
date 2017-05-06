@@ -6,7 +6,7 @@ import Notification               from '../src/js/Notification2';
 let sut;
 
 beforeEach(function () {
-    let props = { propsData: { message: 'Foobar' } };
+    let props = {propsData: {message: 'Foobar'}};
     sut = boot(Notification, props);
 });
 

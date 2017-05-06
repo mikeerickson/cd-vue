@@ -6,19 +6,16 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.css"/>
-    <link rel="stylesheet" href="css/sweetalert2.min.css">
     <link rel="stylesheet" href="css/app.css"/>
 
 </head>
     <body>
         <div id="v-app" id="content" class="content">
-            <div class="col-md-3">
+
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
                 <h2>{{ appName }}</h2>
                 <h4>v{{ appVersion }}</h4>
-            </div>
-            <div class="col-md-6">
-                <h1>Form by FormIt</h1>
-                <form-it :id="this.formID" :model="this.model" :fields="this.fields" :header="this.header" :footer="this.footer"></form-it>
             </div>
             <div class="col-md-3"></div>
         </div>
